@@ -12,9 +12,9 @@ import Utils.Coordinate;
 
 //tile class, represents each square on the chess board
 public class Tile extends JButton{
-	private Coordinate tileCoordinate;
+	private final Coordinate tileCoordinate;
 	private Piece piece = null;
-	private ChessColor color = null;
+	private final ChessColor color;
 	
 	//class constructor, assigns coordinates for tile and color of tile
 	public Tile(Coordinate coordinate, ChessColor color) {
@@ -28,6 +28,11 @@ public class Tile extends JButton{
 		else {
 			this.setBackground(new Color(245, 245, 245));
 		}
+	}
+	
+	//returns coordinates of this tile on the board
+	public Coordinate getCoordinate() {
+		return this.tileCoordinate;
 	}
 	
 	//returns chess piece occupying this tile or null if empty
@@ -50,18 +55,13 @@ public class Tile extends JButton{
 		}
 	}
 	
-	private class ButtonHandler implements ActionListener{
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-	}
-
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+//	private class ButtonHandler implements ActionListener{
+//
+//		@Override
+//		public void actionPerformed(ActionEvent e) {
+//			if(e.getSource() == this)
+//			
+//		}
+//		
+//	}
 }

@@ -1,6 +1,8 @@
 package Board;
 
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -20,6 +22,7 @@ public class Board extends JPanel{
 	private int xSize, ySize;
 	private Tile[][] tiles;
 
+	//function sets up pieces on board for start of game
 	void setUpPieces() {
 		//Set up white pieces
 		tiles[7][0].setPiece(new Rook(new Coordinate(7, 0), ChessColor.WHITE));
@@ -55,13 +58,13 @@ public class Board extends JPanel{
 		}
 		
 		for(int i = 0; i < tiles[1].length; i++) {
-			tiles[1][i].setPiece(new Pawn(new Coordinate(6, i), ChessColor.BLACK));
+			tiles[1][i].setPiece(new Pawn(new Coordinate(1, i), ChessColor.BLACK));
 			tiles[1][i].displayPiece();
 		}
 	}
 	
+	//function fills tiles array and fills board with JButtons to act as spaces, alternate between black and white tiles
 	void setUpTiles(){
-		//loop fills tiles array and fills board with JButtons to act as spaces, alternate between black and white tiles
 		boolean setBlack;
 		for(int i = 0; i < xSize; i++) {
 			//even rows start with white, odd rows start with black
@@ -84,6 +87,7 @@ public class Board extends JPanel{
 					setBlack = true;
 				}
 
+				tiles[i][j].addActionListener(new TileHandler());
 				add(tiles[i][j]);
 				tiles[i][j].displayPiece();
 			}
@@ -97,7 +101,7 @@ public class Board extends JPanel{
 		setLayout(new GridLayout(8, 8));
 		this.xSize = xSize;
 		this.ySize = ySize;
-		tiles = new Tile[xSize][ySize];
+		this.tiles = new Tile[xSize][ySize];
 		setUpTiles();
 		setUpPieces();
 	}
@@ -109,6 +113,25 @@ public class Board extends JPanel{
 	
 	//returns true if specified coordinate is within the bounds of the board
 	public boolean isValidCoordinate(Coordinate coordinate) {
-		return coordinate.getRow() < 0 || coordinate.getRow() > xSize || coordinate.getCol() < 0 || coordinate.getCol() > ySize;
+		return coordinate.getRow() >= 0 && coordinate.getRow() < xSize && coordinate.getCol() >= 0 && coordinate.getCol() < ySize;
+	}
+	
+	//Handler class for button clicks to tiles on gameboard
+	private class TileHandler implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			Tile clickedTile = (Tile) e.getSource();
+			System.out.println("Button clicked!" + clickedTile.getPiece());
+			System.out.println(clickedTile.getCoordinate().getRow() + ", " + clickedTile.getCoordinate().getCol());
+			System.out.println();
+			if(clickedTile.getPiece() != null) {
+				System.out.println(clickedTile.getPiece().getCoordinate().getRow() + ", " + clickedTile.getPiece().getCoordinate().getCol());
+			}
+			
+			System.out.println();
+			
+		}
+		
 	}
 }
