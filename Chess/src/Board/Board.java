@@ -92,7 +92,7 @@ public class Board extends JPanel{
 		}
 	}
 	
-	//class constructor, takes x and y size and assigns, also fills tiles array with empty tiles
+	//class constructor, takes x and y size and assigns, also fills tiles array with empty tiles and sets up pieces on the board
 	public Board(int xSize, int ySize) {
 		setLayout(new GridLayout(8, 8));
 		this.xSize = xSize;
