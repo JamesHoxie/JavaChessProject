@@ -17,10 +17,12 @@ import Pieces.Rook;
 import Utils.ChessColor;
 import Utils.Coordinate;
 
-//board class contains 2d array of tiles that contain pieces used for play
+//board class contains 2d array of tiles that contain pieces used for play. also has reference to current selected piece for
+//the player taking their current turn
 public class Board extends JPanel{
 	private int xSize, ySize;
 	private Tile[][] tiles;
+	private Piece currentSelectedPiece = null;
 
 	//function sets up pieces on board for start of game
 	void setUpPieces() {
@@ -111,6 +113,16 @@ public class Board extends JPanel{
 		return tiles[coordinate.getRow()][coordinate.getCol()];
 	}
 	
+	//returns the current selected piece on this board
+	public Piece getCurrentSelectedPiece() {
+		return this.currentSelectedPiece;
+	}
+	
+	//sets the current selected piece to piece or null if no piece should be currently selected
+	public void setCurrentSelectedPiece(Piece piece) {
+		this.currentSelectedPiece = piece;
+	}
+	
 	//returns true if specified coordinate is within the bounds of the board
 	public boolean isValidCoordinate(Coordinate coordinate) {
 		return coordinate.getRow() >= 0 && coordinate.getRow() < xSize && coordinate.getCol() >= 0 && coordinate.getCol() < ySize;
@@ -119,17 +131,22 @@ public class Board extends JPanel{
 	//Handler class for button clicks to tiles on gameboard
 	private class TileHandler implements ActionListener{
 
+		//set current selected piece to be whatever is clicked on
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			Tile clickedTile = (Tile) e.getSource();
-			System.out.println("Button clicked!" + clickedTile.getPiece());
-			System.out.println(clickedTile.getCoordinate().getRow() + ", " + clickedTile.getCoordinate().getCol());
-			System.out.println();
-			if(clickedTile.getPiece() != null) {
-				System.out.println(clickedTile.getPiece().getCoordinate().getRow() + ", " + clickedTile.getPiece().getCoordinate().getCol());
-			}
-			
-			System.out.println();
+			//if a piece is not currently selected...
+			if(getCurrentSelectedPiece() == null) {
+				Tile clickedTile = (Tile) e.getSource();
+				setCurrentSelectedPiece(clickedTile.getPiece());
+			}	
+//			System.out.println("Button clicked!" + clickedTile.getPiece());
+//			System.out.println(clickedTile.getCoordinate().getRow() + ", " + clickedTile.getCoordinate().getCol());
+//			System.out.println();
+//			if(clickedTile.getPiece() != null) {
+//				System.out.println(clickedTile.getPiece().getCoordinate().getRow() + ", " + clickedTile.getPiece().getCoordinate().getCol());
+//			}
+//			
+//			System.out.println();
 			
 		}
 		
