@@ -2,6 +2,7 @@ package Pieces;
 
 import javax.swing.ImageIcon;
 
+import Board.Tile;
 import Utils.ChessColor;
 import Utils.Coordinate;
 
@@ -22,10 +23,10 @@ public class Pawn extends Piece {
 		
 	}
 
-	//can move two spaces forward on first move, otherwise can move one space straight in front when not blocked
-	//moves diagonal forward to capture pieces
 	@Override
-	public void updateMoves() {
+	public Coordinate[] generateMoves() {
+		return null;
+		// TODO Auto-generated method stub
 		
 	}
 }

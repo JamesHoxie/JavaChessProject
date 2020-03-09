@@ -4,29 +4,27 @@ import java.util.ArrayList;
 import javax.swing.Icon;
 
 import Board.Board;
-import Board.Tile;
 import Utils.ChessColor;
 import Utils.Coordinate;
 
 public abstract class Piece {
 	protected Coordinate pieceCoordinate = null;
-	protected ArrayList<Coordinate> moves = null;
 	protected ChessColor pieceColor = null;
 	protected Icon pieceIcon = null;
 	
-	//checks if this piece can move to the coordinate parameter 
-	//specified by checking if that coordinate is in the valid move list for this piece
-	public boolean canMoveTo(Coordinate coordinate) {
-		return this.moves.contains(coordinate);
-	}
-	
-	//checks if this piece can move to given tile
-	public boolean canMoveTo(Tile tile) {
-		return this.moves.contains(tile.getCoordinate());
-	}
+//	//checks if this piece can move to the coordinate parameter 
+//	//specified by checking if that coordinate is in the valid move list for this piece
+//	public boolean canMoveTo(Coordinate coordinate) {
+//		return this.moves.contains(coordinate);
+//	}
+//	
+//	//checks if this piece can move to given tile
+//	public boolean canMoveTo(Tile tile) {
+//		return this.moves.contains(tile.getCoordinate());
+//	}
 
-	//updates this piece's valid move list based on current coordinates and where the piece can legally move
-	public abstract void updateMoves();
+	//generate move list for this piece based on piece type and current tile on the board
+	public abstract Coordinate[] generateMoves();
 	
 	//returns the current coordinates of this piece
 	public Coordinate getCoordinate() {

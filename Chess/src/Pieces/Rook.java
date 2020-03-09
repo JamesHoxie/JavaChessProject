@@ -22,7 +22,8 @@ public class Rook extends Piece {
 
 	//moves straight, never diagonal
 	@Override
-	public void updateMoves() {
+	public Coordinate[] generateMoves() {
+		return null;
 		// TODO Auto-generated method stub
 		
 	}

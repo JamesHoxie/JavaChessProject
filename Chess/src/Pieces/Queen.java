@@ -22,8 +22,12 @@ public class Queen extends Piece {
 
 	//moves straight or diagonal
 	@Override
-	public void updateMoves() {
+	public Coordinate[] generateMoves() {
+		return null;
 		// TODO Auto-generated method stub
 		
 	}
+
+	
+
 }

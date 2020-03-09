@@ -22,7 +22,8 @@ public class Knight extends Piece {
 
 	//moves in L shape
 	@Override
-	public void updateMoves() {
+	public Coordinate[] generateMoves() {
+		return null;
 		// TODO Auto-generated method stub
 		
 	}

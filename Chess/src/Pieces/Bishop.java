@@ -20,9 +20,10 @@ public class Bishop extends Piece {
 		
 	}
 
-	//moves diagonally on tiles that match the color of the tile the piece is on, never straight
+	//moves diagonal in any direction
 	@Override
-	public void updateMoves() {
+	public Coordinate[] generateMoves() {
+		return null;
 		// TODO Auto-generated method stub
 		
 	}

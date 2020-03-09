@@ -20,10 +20,12 @@ public class King extends Piece {
 		
 	}
 
-	//moves one space in any direction from current space, cannot ever move into a position that places this piece in check
+	//moves one space in any direction as long as that space would not put him in check
 	@Override
-	public void updateMoves() {
+	public Coordinate[] generateMoves() {
+		return null;
 		// TODO Auto-generated method stub
 		
 	}
+
 }

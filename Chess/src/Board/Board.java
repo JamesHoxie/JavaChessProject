@@ -3,6 +3,7 @@ package Board;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -17,12 +18,12 @@ import Pieces.Rook;
 import Utils.ChessColor;
 import Utils.Coordinate;
 
-//board class contains 2d array of tiles that contain pieces used for play. also has reference to current selected piece for
-//the player taking their current turn
+//board class contains 2d array of tiles that contain pieces used for play
 public class Board extends JPanel{
 	private int xSize, ySize;
 	private Tile[][] tiles;
-	private Piece currentSelectedPiece = null;
+	private Move currentMove;
+	private ChessColor currentPlayerColor;
 
 	//function sets up pieces on board for start of game
 	void setUpPieces() {
@@ -104,8 +105,15 @@ public class Board extends JPanel{
 		this.xSize = xSize;
 		this.ySize = ySize;
 		this.tiles = new Tile[xSize][ySize];
+		this.currentMove = new Move();
+		this.currentPlayerColor = ChessColor.WHITE;
 		setUpTiles();
 		setUpPieces();
+	}
+	
+	//changes current color of current player taking their turn
+	public void setCurrentPlayerColor(ChessColor color) {
+		this.currentPlayerColor = color;
 	}
 	
 	//returns tile of this board at given coordinate, coordinate must be valid
@@ -113,41 +121,72 @@ public class Board extends JPanel{
 		return tiles[coordinate.getRow()][coordinate.getCol()];
 	}
 	
-	//returns the current selected piece on this board
-	public Piece getCurrentSelectedPiece() {
-		return this.currentSelectedPiece;
-	}
-	
-	//sets the current selected piece to piece or null if no piece should be currently selected
-	public void setCurrentSelectedPiece(Piece piece) {
-		this.currentSelectedPiece = piece;
-	}
-	
 	//returns true if specified coordinate is within the bounds of the board
 	public boolean isValidCoordinate(Coordinate coordinate) {
 		return coordinate.getRow() >= 0 && coordinate.getRow() < xSize && coordinate.getCol() >= 0 && coordinate.getCol() < ySize;
 	}
 	
+	//moves piece from source tile to destination for the current move
+	public void executeMove() {
+		Tile sourceTile = currentMove.getSourceTile();
+		Tile destinationTile = currentMove.getDestinationTile();
+		Piece piece = sourceTile.getPiece();
+		
+		sourceTile.setPiece(null);
+		sourceTile.displayPiece();
+		destinationTile.setPiece(piece);
+		destinationTile.displayPiece();
+		piece.setCoordinate(destinationTile.getCoordinate());
+	}
+	
+	//checks if current move is valid
+	public boolean isValidMove() {
+		Tile sourceTile = currentMove.getSourceTile();
+		Tile destinationTile = currentMove.getDestinationTile();
+		Piece piece = sourceTile.getPiece();
+		
+		//TODO: check if move is allowed for piece being moved
+		
+		return true;
+	}
+	
+	//try to execute this move, first checks if move is valid, if not move is cleared and nothing happens
+	//if move is valid, executeMove() is called
+	public void tryMove() {
+		if(isValidMove()) {
+			executeMove();
+		}
+
+		currentMove.clearMove();
+	}
+	
 	//Handler class for button clicks to tiles on gameboard
 	private class TileHandler implements ActionListener{
 
-		//set current selected piece to be whatever is clicked on
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			//if a piece is not currently selected...
-			if(getCurrentSelectedPiece() == null) {
-				Tile clickedTile = (Tile) e.getSource();
-				setCurrentSelectedPiece(clickedTile.getPiece());
-			}	
-//			System.out.println("Button clicked!" + clickedTile.getPiece());
-//			System.out.println(clickedTile.getCoordinate().getRow() + ", " + clickedTile.getCoordinate().getCol());
-//			System.out.println();
-//			if(clickedTile.getPiece() != null) {
-//				System.out.println(clickedTile.getPiece().getCoordinate().getRow() + ", " + clickedTile.getPiece().getCoordinate().getCol());
-//			}
-//			
-//			System.out.println();
+			System.out.println("tile clicked!");
+			Tile clickedTile = (Tile) e.getSource();
+			Piece clickedPiece = clickedTile.getPiece();
 			
+			if(!currentMove.sourceSelected()) {
+				//if clicked tile has a piece and 
+				//if clicked piece matches color of player taking their turn
+				if(clickedPiece != null && clickedPiece.getPieceColor() == currentPlayerColor) {
+					currentMove.setSource(clickedTile);
+					System.out.println("SOURCE SET!");
+				}
+			}
+			
+			else if(!currentMove.destinationSelected()) {
+				//if clicked tile is empty or
+				//if clicked tile does not have a piece of the same color as the player taking their turn
+				if(clickedPiece == null || clickedPiece.getPieceColor() != currentPlayerColor) {
+					currentMove.setDestination(clickedTile);
+					System.out.println("DESTINATION SET!");
+					tryMove();
+				}
+			}
 		}
 		
 	}
