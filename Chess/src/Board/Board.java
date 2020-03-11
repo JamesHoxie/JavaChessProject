@@ -121,11 +121,6 @@ public class Board extends JPanel{
 		return tiles[coordinate.getRow()][coordinate.getCol()];
 	}
 	
-	//returns true if specified coordinate is within the bounds of the board
-	public boolean isValidCoordinate(Coordinate coordinate) {
-		return coordinate.getRow() >= 0 && coordinate.getRow() < xSize && coordinate.getCol() >= 0 && coordinate.getCol() < ySize;
-	}
-	
 	//moves piece from source tile to destination for the current move
 	public void executeMove() {
 		Tile sourceTile = currentMove.getSourceTile();
@@ -143,11 +138,18 @@ public class Board extends JPanel{
 	public boolean isValidMove() {
 		Tile sourceTile = currentMove.getSourceTile();
 		Tile destinationTile = currentMove.getDestinationTile();
-		Piece piece = sourceTile.getPiece();
+		Piece piece = sourceTile.getPiece();		
+		Coordinate[] validMoves = piece.generateMoves(tiles);
 		
-		//TODO: check if move is allowed for piece being moved
+		//check all generated moves, if coordinates of any match coordinates of destination tile then
+		//move is valid
+		for(Coordinate c: validMoves) {
+			if(c.equals(destinationTile.getCoordinate())) {
+				return true;
+			}
+		}
 		
-		return true;
+		return false;
 	}
 	
 	//try to execute this move, first checks if move is valid, if not move is cleared and nothing happens
@@ -166,10 +168,12 @@ public class Board extends JPanel{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			System.out.println("tile clicked!");
+			System.out.println(currentMove.sourceSelected());
+			System.out.println(currentMove.destinationSelected());
 			Tile clickedTile = (Tile) e.getSource();
 			Piece clickedPiece = clickedTile.getPiece();
 			
-			if(!currentMove.sourceSelected()) {
+			if(!(currentMove.sourceSelected())) {
 				//if clicked tile has a piece and 
 				//if clicked piece matches color of player taking their turn
 				if(clickedPiece != null && clickedPiece.getPieceColor() == currentPlayerColor) {
@@ -178,7 +182,7 @@ public class Board extends JPanel{
 				}
 			}
 			
-			else if(!currentMove.destinationSelected()) {
+			else if(!(currentMove.destinationSelected())) {
 				//if clicked tile is empty or
 				//if clicked tile does not have a piece of the same color as the player taking their turn
 				if(clickedPiece == null || clickedPiece.getPieceColor() != currentPlayerColor) {

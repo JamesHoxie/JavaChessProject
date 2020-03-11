@@ -40,6 +40,11 @@ public class Tile extends JButton{
 		return this.piece;
 	}
 	
+	//returns true if this tile is not occupied by a piece
+	public boolean isEmpty() {
+		return this.piece == null;
+	}
+	
 	public void setPiece(Piece piece) {
 		this.piece = piece;
 	}

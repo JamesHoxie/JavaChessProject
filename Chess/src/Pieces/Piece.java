@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import javax.swing.Icon;
 
 import Board.Board;
+import Board.Tile;
 import Utils.ChessColor;
 import Utils.Coordinate;
 
@@ -24,7 +25,7 @@ public abstract class Piece {
 //	}
 
 	//generate move list for this piece based on piece type and current tile on the board
-	public abstract Coordinate[] generateMoves();
+	public abstract Coordinate[] generateMoves(Tile[][] tiles);
 	
 	//returns the current coordinates of this piece
 	public Coordinate getCoordinate() {

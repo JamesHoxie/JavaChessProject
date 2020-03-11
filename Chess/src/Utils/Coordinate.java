@@ -9,6 +9,14 @@ public class Coordinate{
 		this.col = col;
 	}
 	
+	//returns whether the given coordinate is valid for the given row and col sizes
+	public static boolean isValidCoordinate(Coordinate coordinate, int rowSize, int colSize) {
+		return coordinate.getRow() >= 0 && 
+			   coordinate.getRow() < rowSize &&
+			   coordinate.getCol() >= 0 &&
+			   coordinate.getCol() < colSize;
+	}
+	
 	//returns row coordinate of this coordinate pair
 	public int getRow() {
 		return this.row;

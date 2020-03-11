@@ -29,22 +29,22 @@ public class GameRunner{
 		
 		//basic game loop, until one player is in checkmate keep taking turns
 		while(!(game.isOver())) {
-			nextPlayer.takeTurn();
-			
-			//TODO: game logic
-			
-			nextPlayer.finishTurn();
-			//set nextPlayer to whoever isn't taking their turn currently
-			if(nextPlayer == whitePlayer) {
-				nextPlayer = blackPlayer;
-			}
-			
-			else {
-				nextPlayer = whitePlayer;
-			}
-			
-			//switch player taking turn
-			boardManager.switchPlayerTurn(nextPlayer);
+//			nextPlayer.takeTurn();
+//			
+//			//TODO: game logic
+//			
+//			nextPlayer.finishTurn();
+//			//set nextPlayer to whoever isn't taking their turn currently
+//			if(nextPlayer == whitePlayer) {
+//				nextPlayer = blackPlayer;
+//			}
+//			
+//			else {
+//				nextPlayer = whitePlayer;
+//			}
+//			
+//			//switch player taking turn
+//			boardManager.switchPlayerTurn(nextPlayer);
 		}
 		
 	}
