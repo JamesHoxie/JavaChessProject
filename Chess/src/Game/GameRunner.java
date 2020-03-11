@@ -11,27 +11,63 @@ import Utils.ChessColor;
 
 public class GameRunner{
 	
+	//return true when whitePlayer or blackPlayer is in checkmate
+	public static boolean gameIsNotOver(ChessPlayer whitePlayer, ChessPlayer blackPlayer) {
+		return !(whitePlayer.isInCheckMate() || blackPlayer.isInCheckMate());
+	}
+	
+	
+	public static void setUpGameFrame(GameFrame chessGame) {
+		chessGame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		chessGame.setSize(700, 700);
+		chessGame.setVisible(true);
+	}
+	
 	public static void main(String[] args) {
 		GameFrame chessGame = new GameFrame();
+		setUpGameFrame(chessGame);
 		
 		ChessPlayer whitePlayer = new ChessPlayer(ChessColor.WHITE);
 		ChessPlayer blackPlayer = new ChessPlayer(ChessColor.BLACK);
 		//white player always goes first
 		ChessPlayer nextPlayer = whitePlayer;
 		
-		ChessBoardManager boardManager = new ChessBoardManager(chessGame.gameBoard);
-		boardManager.setUpGameFrame(chessGame);
+		TurnManager turnManager = new TurnManager(chessGame.gameBoard);
 		
-		//Thread controls execution of chess game
-		GameFlowThread game = new GameFlowThread();
-		game.addParticipants(whitePlayer, blackPlayer, boardManager);
-		game.launch();
+		Thread t1 = new Thread(new Runnable() {
+			@Override
+            public void run() 
+            { 
+                try { 
+                    turnManager.setWhitePlayerTurn(); 
+                } 
+                catch (InterruptedException e) { 
+                    e.printStackTrace(); 
+                } 
+            } 
+        }); 
+
+		Thread t2 = new Thread(new Runnable() {
+			@Override
+            public void run() 
+            { 
+                try { 
+                    turnManager.setBlackPlayerTurn(); 
+                } 
+                catch (InterruptedException e) { 
+                    e.printStackTrace(); 
+                } 
+            } 
+        }); 
 		
-		//basic game loop, until one player is in checkmate keep taking turns
-		while(!(game.isOver())) {
+		t1.start();
+		t2.start();
+		
+//		//basic game loop, until one player is in checkmate keep taking turns
+//		while(gameIsNotOver(whitePlayer, blackPlayer)) {
 //			nextPlayer.takeTurn();
 //			
-//			//TODO: game logic
+//			//TODO: turn switch logic
 //			
 //			nextPlayer.finishTurn();
 //			//set nextPlayer to whoever isn't taking their turn currently
@@ -44,8 +80,7 @@ public class GameRunner{
 //			}
 //			
 //			//switch player taking turn
-//			boardManager.switchPlayerTurn(nextPlayer);
-		}
-		
+//
+//		}	
 	}
 }

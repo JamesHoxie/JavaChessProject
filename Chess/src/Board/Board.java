@@ -111,11 +111,22 @@ public class Board extends JPanel{
 		setUpPieces();
 	}
 	
-	//changes current color of current player taking their turn
-	public void setCurrentPlayerColor(ChessColor color) {
-		this.currentPlayerColor = color;
+	//switches color of current player taking their turn
+	public void switchCurrentPlayerColor() {
+		if(this.currentPlayerColor == ChessColor.BLACK) {
+			this.currentPlayerColor = ChessColor.WHITE;
+		}
+		
+		else {
+			this.currentPlayerColor = ChessColor.BLACK;
+		}
 	}
 	
+	//returns the color of the player currently taking their turn
+	public ChessColor getCurrentPlayerColor() {
+		return this.currentPlayerColor;
+	}
+
 	//returns tile of this board at given coordinate, coordinate must be valid
 	public Tile getTile(Coordinate coordinate) {
 		return tiles[coordinate.getRow()][coordinate.getCol()];
@@ -157,6 +168,7 @@ public class Board extends JPanel{
 	public void tryMove() {
 		if(isValidMove()) {
 			executeMove();
+			switchCurrentPlayerColor();
 		}
 
 		currentMove.clearMove();
