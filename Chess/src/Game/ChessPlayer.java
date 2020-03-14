@@ -3,7 +3,7 @@ package Game;
 import Utils.ChessColor;
 
 //class representing each player in chess
-public class ChessPlayer implements Runnable{
+public class ChessPlayer{
 	private int points = 0;
 	private boolean inCheckMate = false;
 	private boolean takingTurn = false;
@@ -37,11 +37,5 @@ public class ChessPlayer implements Runnable{
 	//returns the color of this chess player (BLACK or WHITE)
 	public ChessColor getPlayerColor() {
 		return this.playerColor;
-	}
-
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		
 	}
 }

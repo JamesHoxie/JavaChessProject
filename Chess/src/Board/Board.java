@@ -24,15 +24,20 @@ public class Board extends JPanel{
 	private Tile[][] tiles;
 	private Move currentMove;
 	private ChessColor currentPlayerColor;
+	private ChessColor playerInCheckMate = null;
+	private ChessColor playerInCheck = null;
+	private King blackKing, whiteKing;
 
 	//function sets up pieces on board for start of game
 	void setUpPieces() {
 		//Set up white pieces
+		whiteKing = new King(new Coordinate(7, 4), ChessColor.WHITE);
+		
 		tiles[7][0].setPiece(new Rook(new Coordinate(7, 0), ChessColor.WHITE));
 		tiles[7][1].setPiece(new Knight(new Coordinate(7, 1), ChessColor.WHITE));
 		tiles[7][2].setPiece(new Bishop(new Coordinate(7, 2), ChessColor.WHITE));
 		tiles[7][3].setPiece(new Queen(new Coordinate(7, 3), ChessColor.WHITE));
-		tiles[7][4].setPiece(new King(new Coordinate(7, 4), ChessColor.WHITE));
+		tiles[7][4].setPiece(whiteKing);
 		tiles[7][5].setPiece(new Bishop(new Coordinate(7, 5), ChessColor.WHITE));
 		tiles[7][6].setPiece(new Knight(new Coordinate(7, 6), ChessColor.WHITE));
 		tiles[7][7].setPiece(new Rook(new Coordinate(7, 7), ChessColor.WHITE));
@@ -47,11 +52,13 @@ public class Board extends JPanel{
 		}
 		
 		//Set up black pieces
+		blackKing = new King(new Coordinate(0, 4), ChessColor.BLACK);
+		
 		tiles[0][0].setPiece(new Rook(new Coordinate(0, 0), ChessColor.BLACK));
 		tiles[0][1].setPiece(new Knight(new Coordinate(0, 1), ChessColor.BLACK));
 		tiles[0][2].setPiece(new Bishop(new Coordinate(0, 2), ChessColor.BLACK));
 		tiles[0][3].setPiece(new Queen(new Coordinate(0, 3), ChessColor.BLACK));
-		tiles[0][4].setPiece(new King(new Coordinate(0, 4), ChessColor.BLACK));
+		tiles[0][4].setPiece(blackKing);
 		tiles[0][5].setPiece(new Bishop(new Coordinate(0, 5), ChessColor.BLACK));
 		tiles[0][6].setPiece(new Knight(new Coordinate(0, 6), ChessColor.BLACK));
 		tiles[0][7].setPiece(new Rook(new Coordinate(0, 7), ChessColor.BLACK));
@@ -109,6 +116,39 @@ public class Board extends JPanel{
 		this.currentPlayerColor = ChessColor.WHITE;
 		setUpTiles();
 		setUpPieces();
+	}
+	
+	//returns true if the player matching player color is in check
+	public boolean inCheck(ChessColor playerColor) {
+		return playerInCheck != null && playerInCheck == playerColor;
+	}
+	
+	public void checkForCheck() {
+		if(blackKing.inCheck(tiles, blackKing.getCoordinate())) {
+			playerInCheck = ChessColor.BLACK;
+		}
+		
+		else if(whiteKing.inCheck(tiles, blackKing.getCoordinate())) {
+			playerInCheck = ChessColor.WHITE;
+		}
+		
+		else {
+			playerInCheck = null;
+		}
+	}
+	
+	public void checkForCheckMate() {
+		if(blackKing.inCheckMate(tiles, whiteKing.getCoordinate())) {
+			playerInCheckMate = ChessColor.BLACK;
+		}
+		
+		else if(whiteKing.inCheckMate(tiles, whiteKing.getCoordinate())) {
+			playerInCheckMate = ChessColor.WHITE;
+		}
+		
+		else {
+			playerInCheckMate = null;
+		}
 	}
 	
 	//switches color of current player taking their turn
