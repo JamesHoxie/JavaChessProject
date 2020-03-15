@@ -8,7 +8,17 @@ import Board.Tile;
 import Utils.ChessColor;
 import Utils.Coordinate;
 
+/**
+ * This class represents the Queen piece in a chess game.
+ * @author James Hoxie
+ *
+ */
 public class Queen extends Piece {
+	/**
+	 * Class constructor, sets the coordinates and color for this Queen
+	 * @param coordinate the current coordinates of this Queen
+	 * @param color the ChessColor of this Queen
+	 */
 	public Queen(Coordinate coordinate, ChessColor color) {
 		this.pieceCoordinate = coordinate;
 		this.pieceColor = color;

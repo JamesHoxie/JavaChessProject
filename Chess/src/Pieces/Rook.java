@@ -8,7 +8,17 @@ import Board.Tile;
 import Utils.ChessColor;
 import Utils.Coordinate;
 
+/**
+ * This class represents the Rook piece in a chess game.
+ * @author James Hoxie
+ *
+ */
 public class Rook extends Piece {
+	/**
+	 * Class constructor, sets the coordinates and color for this Rook
+	 * @param coordinate the current coordinates of this Rook
+	 * @param color the ChessColor of this Rook
+	 */
 	public Rook(Coordinate coordinate, ChessColor color) {
 		this.pieceCoordinate = coordinate;
 		this.pieceColor = color;

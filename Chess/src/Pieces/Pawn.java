@@ -10,11 +10,21 @@ import Utils.Coordinate;
 
 //TODO: Implement piece promotion and en passant
 
+/**
+ * This class represents the Pawn piece in a chess game.
+ * @author James Hoxie
+ *
+ */
 public class Pawn extends Piece {
 	//member variable, set to true if this pawn has just used its double move, used later for other pawns to 
 	//check if they are allowed to capture this piece in passing (en passant)
 	private boolean enPassant = false;
 	
+	/**
+	 * Class constructor, sets the coordinates and color for this Pawn
+	 * @param coordinate the current coordinates of this Pawn
+	 * @param color the ChessColor of this Pawn
+	 */
 	public Pawn(Coordinate coordinate, ChessColor color) {
 		this.pieceCoordinate = coordinate;
 		this.pieceColor = color;
@@ -89,12 +99,6 @@ public class Pawn extends Piece {
 		   !(tiles[dstRow][dstCol].isEmpty()) &&
 		   tiles[dstRow][dstCol].getPiece().getPieceColor() != pieceColor) {
 			moves.add(new Coordinate(dstRow, dstCol));
-		}
-
-		for(Coordinate c: moves) {
-			System.out.println();
-			System.out.println("row: " + c.getRow());
-			System.out.println("col: " + c.getCol());
 		}
 		
 		return moves.toArray(new Coordinate[moves.size()]);

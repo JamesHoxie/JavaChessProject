@@ -8,7 +8,17 @@ import Board.Tile;
 import Utils.ChessColor;
 import Utils.Coordinate;
 
+/**
+ * This class represents the Knight piece in a chess game.
+ * @author James Hoxie
+ *
+ */
 public class Knight extends Piece {
+	/**
+	 * Class constructor, sets the coordinates and color for this Knight
+	 * @param coordinate the current coordinates of this Knight
+	 * @param color the ChessColor of this Knight
+	 */
 	public Knight(Coordinate coordinate, ChessColor color) {
 		this.pieceCoordinate = coordinate;
 		this.pieceColor = color;
@@ -29,7 +39,6 @@ public class Knight extends Piece {
 		ArrayList<Coordinate> potentialMoves = new ArrayList<Coordinate>();
 		ArrayList<Coordinate> validMoves = new ArrayList<Coordinate>();
 		
-		int dstCol, dstRow;
 		int srcRow = pieceCoordinate.getRow();
 		int srcCol = pieceCoordinate.getCol();
 		int rowSize = tiles[0].length;

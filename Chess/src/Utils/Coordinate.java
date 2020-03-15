@@ -1,15 +1,31 @@
 package Utils;
-//coordinate class, represents row and column coordinates of tile on board
+/**
+ * 
+ * This class represents a pair of row and column coordinates for a tile on the chess board.
+ * @author James Hoxie
+ * 
+ * 
+ */
 public class Coordinate{
 	private int row, col;
 	
-	//class constructor, takes row and column coordinates as params
+	/**
+	 * Class constructor
+	 * @param row The row coordinate of this pair
+	 * @param col The column coordinate of this pair
+	 */
 	public Coordinate(int row, int col) {
 		this.row = row;
 		this.col = col;
 	}
 	
-	//returns whether the given coordinate is valid for the given row and col sizes
+	/**
+	 * Static class function, checks whether the given coordinate is valid for the given row and column sizes
+	 * @param coordinate The coordinate to be validated
+	 * @param rowSize The amount of rows for this coordinate space
+	 * @param colSize The amount of columns for this coordinate space
+	 * @return true if this coordinate is within the bounds of rowSize and colSize
+	 */
 	public static boolean isValidCoordinate(Coordinate coordinate, int rowSize, int colSize) {
 		return coordinate.getRow() >= 0 && 
 			   coordinate.getRow() < rowSize &&
@@ -17,27 +33,39 @@ public class Coordinate{
 			   coordinate.getCol() < colSize;
 	}
 	
-	//returns row coordinate of this coordinate pair
+	/**
+	 * 
+	 * @return the row coordinate of this coordinate pair
+	 */
 	public int getRow() {
 		return this.row;
 	}
 	
-	//returns col coordinate of this coordinate pair
+	/**
+	 * 
+	 * @return the column coordinate of this coordinate pair
+	 */
 	public int getCol() {
 		return this.col;
 	}
 	
-	//sets x coordinate of this coordinate pair
+
+	/**
+	 * 
+	 * @param row value to be set for the row coordinate for this pair
+	 */
 	public void setRow(int row) {
 		this.row = row;
 	}
 	
-	//sets y coordinate of this coordinate pair
+	/**
+	 * 
+	 * @param col value to be set for the column coordinate for this pair
+	 */
 	public void setCol(int col) {
 		this.col = col;
 	}
 	
-	//override equals method to compare coordinates properly, returns true if coordinates have same x and y values
 	@Override 
 	public boolean equals(Object o) {
 		if(o == this) {

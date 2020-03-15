@@ -206,8 +206,19 @@ public class Board extends JPanel{
 	//try to execute this move, first checks if move is valid, if not move is cleared and nothing happens
 	//if move is valid, executeMove() is called
 	public void tryMove() {
-		if(isValidMove()) {
+		if(playerInCheck != null) {
+			if(playerInCheck == ChessColor.BLACK) {
+				
+			}
+			
+			else if(playerInCheck == ChessColor.WHITE) {
+				
+			}
+		}
+		
+		else if(isValidMove()) {
 			executeMove();
+			checkForCheck();
 			switchCurrentPlayerColor();
 		}
 

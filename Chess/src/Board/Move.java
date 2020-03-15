@@ -2,24 +2,39 @@ package Board;
 
 import java.util.ArrayList;
 
-//This class holds an arraylist of tiles that will never be larger than size 2,
-//the tile at index 0 is the source tile of this move and the tile at index 1 is the
-//destination tile of the this move
-//this class does not check if a move is valid, it simply constructs a move based on source and destination
+/**
+ * 
+ * This class represents a move in chess, from one space to another. It holds an arraylist of tiles that will never be larger than size 2, 
+ * the tile at index 0 is the source tile of this move and the tile at index 1 is the destination tile of this
+ * move. This class does not check if a move is valid, it only constructs a move based on source and destination selections
+ * @author James Hoxie
+ *
+ */
 public class Move{
-	private ArrayList<Tile> move;
+	private ArrayList<Tile> move = new ArrayList<Tile>();
 	
-	//return true is a source tile has been selected
+	public Move() {}
+
+	/**
+	 * 
+	 * @return true if a source tile has been selected for this move
+	 */
 	public boolean sourceSelected() {
 		return move.size() >= 1;
 	}
 	
-	//return true if a destination tile has been selected
+	/**
+	 * 
+	 * @return true if a destination tile has been selected
+	 */
 	public boolean destinationSelected() {
 		return move.size() == 2;
 	}
 	
-	//return tile set as source for this move, null if no source set
+	/**
+	 * 
+	 * @return the tile set as the source for this move or null if no source has been set
+	 */
 	public Tile getSourceTile() {
 		if(sourceSelected()) {
 			return move.get(0);
@@ -28,7 +43,10 @@ public class Move{
 		return null;
 	}
 	
-	//return tile set as destination for this move
+	/**
+	 * 
+	 * @return the tile set as the destination for this move or null if no destination has been set
+	 */
 	public Tile getDestinationTile() {
 		if(destinationSelected()) {
 			return move.get(1);
@@ -37,23 +55,26 @@ public class Move{
 		return null;
 	}
 	
-	//set source tile for this move
+	/**
+	 * Sets the source tile for this move
+	 * @param source the tile to be set as the source for this move
+	 */
 	public void setSource(Tile source) {
 		move.add(source);
 	}
-	
-	//set destination tile for this move
+
+	/**
+	 * Sets the destination tile for this move
+	 * @param destination the tile to be set as the destination for this move
+	 */
 	public void setDestination(Tile destination) {
 		move.add(destination);
 	}
 	
-	//clears previous move for next move
+	/**
+	 * Clears the previously generated move to allow a new move to be constructed
+	 */
 	public void clearMove() {
 		move.clear();
-	}
-	
-	//class constructor, initialize arraylist to hold source and destination tiles for move
-	public Move() {
-		move = new ArrayList<Tile>();
 	}
 }

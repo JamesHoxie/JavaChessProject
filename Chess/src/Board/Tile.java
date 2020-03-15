@@ -10,18 +10,26 @@ import Pieces.Piece;
 import Utils.ChessColor;
 import Utils.Coordinate;
 
-//tile class, represents each square on the chess board
+/**
+ * This class represents each square on the chess board
+ * @author James Hoxie
+ *
+ */
 public class Tile extends JButton{
 	private final Coordinate tileCoordinate;
 	private Piece piece = null;
-	private final ChessColor color;
+	private final ChessColor tileColor;
 	
-	//class constructor, assigns coordinates for tile and color of tile
+	/**
+	 * Class constructor, assigns coordinates for tile and the ChessColor of the tile
+	 * @param coordinate the coordinates of this tile on the board
+	 * @param color the ChessColor of this tile
+	 */
 	public Tile(Coordinate coordinate, ChessColor color) {
 		this.tileCoordinate = new Coordinate(coordinate.getRow(), coordinate.getCol());
-		this.color = color;
+		this.tileColor = color;
 		
-		if(this.color == ChessColor.BLACK) {
+		if(this.tileColor == ChessColor.BLACK) {
 			this.setBackground(new Color(40, 40, 40));
 		}
 		
@@ -30,26 +38,41 @@ public class Tile extends JButton{
 		}
 	}
 	
-	//returns coordinates of this tile on the board
+	/**
+	 * 
+	 * @return the coordinates of this tile on the board
+	 */
 	public Coordinate getCoordinate() {
 		return this.tileCoordinate;
 	}
 	
-	//returns chess piece occupying this tile or null if empty
+	/**
+	 * 
+	 * @return the piece occupying this tile on the board or null if empty
+	 */
 	public Piece getPiece() {
 		return this.piece;
 	}
 	
-	//returns true if this tile is not occupied by a piece
+	/**
+	 * 
+	 * @return true if this tile has no piece occupying it
+	 */
 	public boolean isEmpty() {
 		return this.piece == null;
 	}
 	
+	/**
+	 * Sets a piece on this tile on the chess board
+	 * @param piece the piece to be placed on this tile
+	 */
 	public void setPiece(Piece piece) {
 		this.piece = piece;
 	}
-	
-	//displays current piece on this tile or nothing if empty
+
+	/**
+	 * Displays the current piece occupying this tile on the GUI or nothing if this tile is empty
+	 */
 	public void displayPiece() {
 		if(this.piece != null) {
 			this.setIcon(this.piece.getPieceIcon());
@@ -59,14 +82,4 @@ public class Tile extends JButton{
 			this.setIcon(null);
 		}
 	}
-	
-//	private class ButtonHandler implements ActionListener{
-//
-//		@Override
-//		public void actionPerformed(ActionEvent e) {
-//			if(e.getSource() == this)
-//			
-//		}
-//		
-//	}
 }

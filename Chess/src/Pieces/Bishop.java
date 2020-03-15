@@ -8,7 +8,18 @@ import Board.Tile;
 import Utils.ChessColor;
 import Utils.Coordinate;
 
+/**
+ * 
+ * This class represents the Bishop piece in a chess game
+ * @author James Hoxie
+ *
+ */
 public class Bishop extends Piece {
+	/**
+	 * Class constructor, sets the coordinates and color for this Bishop
+	 * @param coordinate the current coordinates of this Bishop
+	 * @param color the ChessColor of this Bishop
+	 */
 	public Bishop(Coordinate coordinate, ChessColor color) {
 		this.pieceCoordinate = coordinate;
 		this.pieceColor = color;
@@ -23,7 +34,12 @@ public class Bishop extends Piece {
 
 	}
 
-	//move calculation done statically to allow queen to use
+	/**
+	 * Static class function used to allow the Queen piece to generate moves a Bishop piece could take
+	 * @param tiles 2D array of tiles for the chess board being played on
+	 * @param piece The piece being moved; either a Bishop or a Queen
+	 * @return
+	 */
 	public static Coordinate[] generateBishopMoves(Tile[][] tiles, Piece piece) {
 		ArrayList<Coordinate> validMoves = new ArrayList<Coordinate>();
 

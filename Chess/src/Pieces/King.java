@@ -8,7 +8,17 @@ import Board.Tile;
 import Utils.ChessColor;
 import Utils.Coordinate;
 
+/**
+ * This class represents the King piece in a chess game.
+ * @author James Hoxie
+ *
+ */
 public class King extends Piece {
+	/**
+	 * Class constructor, sets the coordinates and color for this King
+	 * @param coordinate the current coordinates of this King
+	 * @param color the ChessColor of this King
+	 */
 	public King(Coordinate coordinate, ChessColor color) {
 		this.pieceCoordinate = coordinate;
 		this.pieceColor = color;

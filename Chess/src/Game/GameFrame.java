@@ -10,6 +10,12 @@ import javax.swing.JLabel;
 
 import Board.Board;
 
+/**
+ * 
+ * Main GUI for the chess game.
+ * @author James Hoxie
+ *
+ */
 public class GameFrame extends JFrame {
 	Board gameBoard = new Board(8, 8);
 	JLabel titleBox = new JLabel("This textbox could be used for a title", JLabel.CENTER);
@@ -18,6 +24,9 @@ public class GameFrame extends JFrame {
 	JLabel pieceBox = new JLabel("This textbox could be used for captured pieces");
 	TextArea actionText = new TextArea("Chess game actions will appear here", 5, 100);
 	
+	/**
+	 * Class Constructor
+	 */
 	public GameFrame() {
 		super("Chess");
 		Color backgroundColor = new Color(90, 60, 60);
