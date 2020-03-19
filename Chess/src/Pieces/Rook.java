@@ -130,10 +130,6 @@ public class Rook extends Piece {
 			}	
 		}
 		
-		for(Coordinate c: validMoves) {
-			System.out.println("Row: " + c.getRow() + ", Col: " + c.getCol());
-		}
-		
 		return validMoves.toArray(new Coordinate[validMoves.size()]);
 	}
 

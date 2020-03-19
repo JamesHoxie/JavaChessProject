@@ -1,6 +1,8 @@
 package Board;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 
@@ -10,6 +12,7 @@ import java.util.ArrayList;
  * @author James Hoxie
  *
  */
+
 public class Move{
 	private ArrayList<Tile> move = new ArrayList<Tile>();
 	

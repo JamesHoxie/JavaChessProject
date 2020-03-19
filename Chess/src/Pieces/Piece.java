@@ -65,4 +65,21 @@ public abstract class Piece {
 		this.pieceCoordinate.setRow(coordinate.getRow());
 		this.pieceCoordinate.setCol(coordinate.getCol());
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o == this) {
+			return true;
+		}
+		
+		if(!(o instanceof Piece)) {
+			return false;
+		}
+		
+		Piece p = (Piece) o;
+		
+		return p.getClass() == this.getClass() &&
+			   p.getPieceColor() == pieceColor &&
+			   p.getCoordinate() == pieceCoordinate;
+	}
 }

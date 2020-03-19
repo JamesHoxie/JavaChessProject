@@ -55,24 +55,18 @@ public class Bishop extends Piece {
 
 		//North West
 		for(int r = srcRow - 1, c = srcCol - 1; r >= 0 && c >= 0; r--, c--) {
-			System.out.println(r);
-			System.out.println(c);
 			nextPotentialMove = new Coordinate(r, c);
 
 			if(!(Coordinate.isValidCoordinate(nextPotentialMove, rowSize, colSize))) {
-				System.out.println("1");
 				break;
 			}
 
 			if(tiles[r][c].isEmpty()) {
-				System.out.println("2");
 				validMoves.add(nextPotentialMove);
 			}
 
 			else {
-				System.out.println("3");
 				if(tiles[r][c].getPiece().getPieceColor() != pieceColor) {
-					System.out.println("4");
 					validMoves.add(nextPotentialMove);
 				}
 
@@ -140,10 +134,6 @@ public class Bishop extends Piece {
 
 				break;
 			}	
-		}
-
-		for(Coordinate c: validMoves) {
-			System.out.println("Row: " + c.getRow() + ", Col: " + c.getCol());
 		}
 
 		return validMoves.toArray(new Coordinate[validMoves.size()]);
