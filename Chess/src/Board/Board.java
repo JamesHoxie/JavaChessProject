@@ -164,14 +164,74 @@ public class Board extends JPanel{
 		setUpPieces();
 	}
 	
-	//returns true if the player matching player color is in check
-	public boolean inCheck(ChessColor playerColor) {
-		return playerInCheck != null && playerInCheck == playerColor;
+	/**
+	 * This function is used to promote a pawn when it reaches the other side of the board
+	 * @param pawnToBePromoted The pawn to be promoted into a piece of promotionType
+	 * @param promotionType The type of chess piece the pawn will be promoted to (Rook, Bishop, Knight, or Queen)
+	 */
+	public void promotePawn(Piece pawnToBePromoted, int promotionType) {
+		ArrayList<Piece> pieces;
+		Piece promotedPawn = null;
+		
+		if(currentPlayerColor == ChessColor.BLACK) {
+			pieces = blackPieces;
+		}
+		
+		else {
+			pieces = whitePieces;
+		}
+		
+		pieces.remove(pawnToBePromoted);
+		
+		switch(promotionType) {
+		case 0:
+			promotedPawn = new Queen(pawnToBePromoted.getCoordinate(), currentPlayerColor);
+			break;
+		case 1:
+			promotedPawn = new Rook(pawnToBePromoted.getCoordinate(), currentPlayerColor);
+			break;
+		case 2:
+			promotedPawn = new Bishop(pawnToBePromoted.getCoordinate(), currentPlayerColor);
+			break;
+		case 3:
+			promotedPawn = new Knight(pawnToBePromoted.getCoordinate(), currentPlayerColor);
+			break;
+		}
+		
+		pieces.add(promotedPawn);
+		getTile(promotedPawn.getCoordinate()).setPiece(promotedPawn);
+		getTile(promotedPawn.getCoordinate()).displayPiece();
+		
 	}
 	
-	//returns true if the player matching player color is in checkmate
-	public boolean inCheckMate(ChessColor playerColor) {
-		return playerInCheckMate != null && playerInCheckMate == playerColor;
+	/**
+	 * This function is used to check if any pawn on the board can be promoted
+	 */
+	public void checkForPawnPromotion() {
+		ArrayList<Piece> pieces;
+		Pawn pawnToPromote = null;
+		int selection = -1;
+		
+		if(currentPlayerColor == ChessColor.WHITE) {
+			pieces = whitePieces;
+		}
+		
+		else {
+			pieces = blackPieces;
+		}
+		
+		for(Piece p: pieces) {
+			if(p instanceof Pawn && (p.getCoordinate().getRow() == 0 || p.getCoordinate().getRow() == 7)) {
+				String[] options = {"Queen", "Rook", "Bishop", "Knight"};
+				selection = JOptionPane.showOptionDialog(null, "Select piece to promote to...", "Pawn Promotion", 0, JOptionPane.PLAIN_MESSAGE, null, options, 0);
+				pawnToPromote = (Pawn) p;
+				break;
+			}
+		}
+		
+		if(selection != -1) {
+			promotePawn(pawnToPromote, selection);
+		}
 	}
 	
 	//returns color of player in checkmate on this board, or null if neither player is in checkmate
@@ -395,8 +455,6 @@ public class Board extends JPanel{
 	public void tryMove() {
 		if(playerInCheck != null) {
 			checkForCheckMate(playerInCheck);
-			
-			
 		}
 		
 		if(isValidMove(currentMove)) {
@@ -415,9 +473,17 @@ public class Board extends JPanel{
 			//player was not put in check by move, commit move
 			else {
 				commitMove();
+				
+				//check if a pawn can be promoted
+				checkForPawnPromotion();
+				
 				switchCurrentPlayerColor();
 				//check if other player was put into check from last players move
 				checkForCheck(currentPlayerColor);
+				
+				if(playerInCheck != null) {
+					JOptionPane.showMessageDialog(null, playerInCheck + " player is in check");
+				}
 				
 				if(playerInCheck == currentPlayerColor) {
 					//check if other player was put into checkmate from last players move

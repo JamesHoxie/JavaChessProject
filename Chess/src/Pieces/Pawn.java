@@ -92,6 +92,7 @@ public class Pawn extends Piece {
 		int srcCol = pieceCoordinate.getCol();
 		int rowSize = tiles[0].length;
 		int colSize = tiles.length;
+		Coordinate[] attackSpaces = generateAttackSpaces(tiles);
 		
 		//set if this pawn will be able to move up the board or down the board, depending on color
 		if(pieceColor == ChessColor.WHITE) {
@@ -124,24 +125,9 @@ public class Pawn extends Piece {
 			moves.add(new Coordinate(dstRow, dstCol));
 		}
 		
-		//space diagonal to left of pawn
-		dstRow = srcRow + upOrDown*1;
-		dstCol = srcCol + upOrDown*1;
-		
-		if(Coordinate.isValidCoordinate(new Coordinate(dstRow, dstCol), rowSize, colSize) &&
-		   !(tiles[dstRow][dstCol].isEmpty()) &&
-		   tiles[dstRow][dstCol].getPiece().getPieceColor() != pieceColor) {
-			moves.add(new Coordinate(dstRow, dstCol));
-		}
-		
-		//space diagonal to right of pawn
-		dstRow = srcRow + upOrDown*1;
-		dstCol = srcCol - upOrDown*1;
-		
-		if(Coordinate.isValidCoordinate(new Coordinate(dstRow, dstCol), rowSize, colSize) &&
-		   !(tiles[dstRow][dstCol].isEmpty()) &&
-		   tiles[dstRow][dstCol].getPiece().getPieceColor() != pieceColor) {
-			moves.add(new Coordinate(dstRow, dstCol));
+		//add attack spaces to moves
+		for(Coordinate c: attackSpaces) {
+			moves.add(c);
 		}
 		
 		return moves.toArray(new Coordinate[moves.size()]);
