@@ -17,21 +17,11 @@ import Utils.Coordinate;
 public class Bishop extends Piece {
 	/**
 	 * Class constructor, sets the coordinates and color for this Bishop
-	 * @param coordinate the current coordinates of this Bishop
-	 * @param color the ChessColor of this Bishop
+	 * @param pieceCoordinate the current coordinates of this Bishop
+	 * @param pieceColor the ChessColor of this Bishop
 	 */
-	public Bishop(Coordinate coordinate, ChessColor color) {
-		this.pieceCoordinate = coordinate;
-		this.pieceColor = color;
-
-		if(color == ChessColor.BLACK) {
-			this.pieceIcon = new ImageIcon(getClass().getResource("/resources/BlackBishop.png"));
-		}
-
-		else {
-			this.pieceIcon = new ImageIcon(getClass().getResource("/resources/WhiteBishop.png"));
-		}
-
+	public Bishop(Coordinate pieceCoordinate, ChessColor pieceColor) {
+		super(pieceCoordinate, pieceColor, 3);
 	}
 
 	/**
@@ -43,8 +33,8 @@ public class Bishop extends Piece {
 	public static Coordinate[] generateBishopMoves(Tile[][] tiles, Piece piece) {
 		ArrayList<Coordinate> validMoves = new ArrayList<Coordinate>();
 
-		int srcRow = piece.getCoordinate().getRow();
-		int srcCol = piece.getCoordinate().getCol();
+		int srcRow = piece.getPieceCoordinate().getRow();
+		int srcCol = piece.getPieceCoordinate().getCol();
 		ChessColor pieceColor = piece.getPieceColor();
 		int rowSize = tiles[0].length;
 		int colSize = tiles.length;

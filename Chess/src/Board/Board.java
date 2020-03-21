@@ -185,22 +185,22 @@ public class Board extends JPanel{
 		
 		switch(promotionType) {
 		case 0:
-			promotedPawn = new Queen(pawnToBePromoted.getCoordinate(), currentPlayerColor);
+			promotedPawn = new Queen(pawnToBePromoted.getPieceCoordinate(), currentPlayerColor);
 			break;
 		case 1:
-			promotedPawn = new Rook(pawnToBePromoted.getCoordinate(), currentPlayerColor);
+			promotedPawn = new Rook(pawnToBePromoted.getPieceCoordinate(), currentPlayerColor);
 			break;
 		case 2:
-			promotedPawn = new Bishop(pawnToBePromoted.getCoordinate(), currentPlayerColor);
+			promotedPawn = new Bishop(pawnToBePromoted.getPieceCoordinate(), currentPlayerColor);
 			break;
 		case 3:
-			promotedPawn = new Knight(pawnToBePromoted.getCoordinate(), currentPlayerColor);
+			promotedPawn = new Knight(pawnToBePromoted.getPieceCoordinate(), currentPlayerColor);
 			break;
 		}
 		
 		pieces.add(promotedPawn);
-		getTile(promotedPawn.getCoordinate()).setPiece(promotedPawn);
-		getTile(promotedPawn.getCoordinate()).displayPiece();
+		getTile(promotedPawn.getPieceCoordinate()).setPiece(promotedPawn);
+		getTile(promotedPawn.getPieceCoordinate()).displayPiece();
 		
 	}
 	
@@ -221,7 +221,7 @@ public class Board extends JPanel{
 		}
 		
 		for(Piece p: pieces) {
-			if(p instanceof Pawn && (p.getCoordinate().getRow() == 0 || p.getCoordinate().getRow() == 7)) {
+			if(p instanceof Pawn && (p.getPieceCoordinate().getRow() == 0 || p.getPieceCoordinate().getRow() == 7)) {
 				String[] options = {"Queen", "Rook", "Bishop", "Knight"};
 				selection = JOptionPane.showOptionDialog(null, "Select piece to promote to...", "Pawn Promotion", 0, JOptionPane.PLAIN_MESSAGE, null, options, 0);
 				pawnToPromote = (Pawn) p;
@@ -278,7 +278,7 @@ public class Board extends JPanel{
 			}
 		}
 		
-		if(threatenedCoordinates.contains(kingBeingChecked.getCoordinate())) {
+		if(threatenedCoordinates.contains(kingBeingChecked.getPieceCoordinate())) {
 			playerInCheck = playerColor;
 			System.out.println(currentPlayerColor + "player is in check");
 		}
@@ -318,7 +318,7 @@ public class Board extends JPanel{
 			moves = piece.generateMoves(tiles);
 
 			for(Coordinate c: moves) {
-				sourceTile = getTile(piece.getCoordinate());
+				sourceTile = getTile(piece.getPieceCoordinate());
 				destinationTile = getTile(c);
 				nextPossibleMove.setSource(sourceTile);
 				nextPossibleMove.setDestination(destinationTile);
@@ -396,7 +396,7 @@ public class Board extends JPanel{
 		Piece sourcePiece = originalPlacements[0];
 		Piece destPiece = originalPlacements[1];
 		
-		sourcePiece.setCoordinate(sourceTile.getCoordinate());
+		sourcePiece.setPieceCoordinate(sourceTile.getCoordinate());
 		sourceTile.setPiece(sourcePiece);
 		destinationTile.setPiece(destPiece);
 		
@@ -419,7 +419,7 @@ public class Board extends JPanel{
 		Piece destPiece = destinationTile.getPiece();
 		Piece[] orignalPlacements = {sourcePiece, destPiece};
 
-		sourcePiece.setCoordinate(destinationTile.getCoordinate());
+		sourcePiece.setPieceCoordinate(destinationTile.getCoordinate());
 		sourceTile.setPiece(null);
 		destinationTile.setPiece(sourcePiece);
 		
@@ -459,8 +459,8 @@ public class Board extends JPanel{
 		
 		if(isValidMove(currentMove)) {
 			Piece piece = currentMove.getSourceTile().getPiece();
-			System.out.println("row: " + currentMove.getSourceTile().getPiece().getCoordinate().getRow());
-			System.out.println("col: " + currentMove.getSourceTile().getPiece().getCoordinate().getCol());
+			System.out.println("row: " + currentMove.getSourceTile().getPiece().getPieceCoordinate().getRow());
+			System.out.println("col: " + currentMove.getSourceTile().getPiece().getPieceCoordinate().getCol());
 			Piece[] originalPlacements;
 			originalPlacements = executeMove(currentMove);
 			checkForCheck(currentPlayerColor);
@@ -499,8 +499,8 @@ public class Board extends JPanel{
 				
 			}
 			
-			System.out.println("drow: " + piece.getCoordinate().getRow());
-			System.out.println("dcol: " + piece.getCoordinate().getCol());
+			System.out.println("drow: " + piece.getPieceCoordinate().getRow());
+			System.out.println("dcol: " + piece.getPieceCoordinate().getCol());
 		}
 
 		

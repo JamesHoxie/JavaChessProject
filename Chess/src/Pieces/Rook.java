@@ -16,29 +16,19 @@ import Utils.Coordinate;
 public class Rook extends Piece {
 	/**
 	 * Class constructor, sets the coordinates and color for this Rook
-	 * @param coordinate the current coordinates of this Rook
-	 * @param color the ChessColor of this Rook
+	 * @param pieceCoordinate the current coordinates of this Rook
+	 * @param pieceColor the ChessColor of this Rook
 	 */
-	public Rook(Coordinate coordinate, ChessColor color) {
-		this.pieceCoordinate = coordinate;
-		this.pieceColor = color;
-		
-		if(color == ChessColor.BLACK) {
-			this.pieceIcon = new ImageIcon(getClass().getResource("/resources/BlackRook.png"));
-		}
-		
-		else {
-			this.pieceIcon = new ImageIcon(getClass().getResource("/resources/WhiteRook.png"));
-		}
-		
+	public Rook(Coordinate pieceCoordinate, ChessColor pieceColor) {
+		super(pieceCoordinate, pieceColor, 1);
 	}
 	
 	//movement calculations done statically to allow queen piece to use
 	public static Coordinate[] generateRookMoves(Tile[][] tiles, Piece piece) {
 		ArrayList<Coordinate> validMoves = new ArrayList<Coordinate>();
 		
-		int srcRow = piece.getCoordinate().getRow();
-		int srcCol = piece.getCoordinate().getCol();
+		int srcRow = piece.getPieceCoordinate().getRow();
+		int srcCol = piece.getPieceCoordinate().getCol();
 		ChessColor pieceColor = piece.getPieceColor();
 		int rowSize = tiles[0].length;
 		int colSize = tiles.length;

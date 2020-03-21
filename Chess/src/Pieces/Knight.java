@@ -16,21 +16,11 @@ import Utils.Coordinate;
 public class Knight extends Piece {
 	/**
 	 * Class constructor, sets the coordinates and color for this Knight
-	 * @param coordinate the current coordinates of this Knight
-	 * @param color the ChessColor of this Knight
+	 * @param pieceCoordinate the current coordinates of this Knight
+	 * @param pieceColor the ChessColor of this Knight
 	 */
-	public Knight(Coordinate coordinate, ChessColor color) {
-		this.pieceCoordinate = coordinate;
-		this.pieceColor = color;
-		
-		if(color == ChessColor.BLACK) {
-			this.pieceIcon = new ImageIcon(getClass().getResource("/resources/BlackKnight.png"));
-		}
-		
-		else {
-			this.pieceIcon = new ImageIcon(getClass().getResource("/resources/WhiteKnight.png"));
-		}
-		
+	public Knight(Coordinate pieceCoordinate, ChessColor pieceColor) {
+		super(pieceCoordinate, pieceColor, 2);		
 	}
 
 	//moves in L shape
@@ -39,8 +29,8 @@ public class Knight extends Piece {
 		ArrayList<Coordinate> potentialMoves = new ArrayList<Coordinate>();
 		ArrayList<Coordinate> validMoves = new ArrayList<Coordinate>();
 		
-		int srcRow = pieceCoordinate.getRow();
-		int srcCol = pieceCoordinate.getCol();
+		int srcRow = getPieceCoordinate().getRow();
+		int srcCol = getPieceCoordinate().getCol();
 		int rowSize = tiles[0].length;
 		int colSize = tiles.length;
 		
@@ -55,7 +45,7 @@ public class Knight extends Piece {
 		
 		for(Coordinate move: potentialMoves) {
 			if(Coordinate.isValidCoordinate(move, rowSize, colSize) &&
-			  (tiles[move.getRow()][move.getCol()].isEmpty() || tiles[move.getRow()][move.getCol()].getPiece().getPieceColor() != pieceColor)) {
+			  (tiles[move.getRow()][move.getCol()].isEmpty() || tiles[move.getRow()][move.getCol()].getPiece().getPieceColor() != getPieceColor())) {
 					validMoves.add(move);
 			}
 		}

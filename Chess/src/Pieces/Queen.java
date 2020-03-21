@@ -16,21 +16,11 @@ import Utils.Coordinate;
 public class Queen extends Piece {
 	/**
 	 * Class constructor, sets the coordinates and color for this Queen
-	 * @param coordinate the current coordinates of this Queen
-	 * @param color the ChessColor of this Queen
+	 * @param pieceCoordinate the current coordinates of this Queen
+	 * @param pieceColor the ChessColor of this Queen
 	 */
-	public Queen(Coordinate coordinate, ChessColor color) {
-		this.pieceCoordinate = coordinate;
-		this.pieceColor = color;
-		
-		if(color == ChessColor.BLACK) {
-			this.pieceIcon = new ImageIcon(getClass().getResource("/resources/BlackQueen.png"));
-		}
-		
-		else {
-			this.pieceIcon = new ImageIcon(getClass().getResource("/resources/WhiteQueen.png"));
-		}
-		
+	public Queen(Coordinate pieceCoordinate, ChessColor pieceColor) {
+		super(pieceCoordinate, pieceColor, 4);
 	}
 
 	//moves straight or diagonal, combine moves that a rook and bishop could take from current position

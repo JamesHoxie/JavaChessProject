@@ -2,6 +2,7 @@ package Pieces;
 import java.util.ArrayList;
 
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 import Board.Board;
 import Board.Tile;
@@ -14,9 +15,34 @@ import Utils.Coordinate;
  *
  */
 public abstract class Piece {
-	protected Coordinate pieceCoordinate = null;
-	protected ChessColor pieceColor = null;
-	protected Icon pieceIcon = null;
+	private Coordinate pieceCoordinate = null;
+	private ChessColor pieceColor;
+	private Icon pieceIcon;
+	private final String[] whitePieceIcons = {"/resources/WhitePawn.png", "/resources/WhiteRook.png",
+										"/resources/WhiteKnight.png", "/resources/WhiteBishop.png",
+										"/resources/WhiteQueen.png", "/resources/WhiteKing.png"};
+	private final String[] blackPieceIcons = {"/resources/BlackPawn.png", "/resources/BlackRook.png", 
+										"/resources/BlackKnight.png", "/resources/BlackBishop.png",
+										"/resources/BlackQueen.png" ,"/resources/BlackKing.png"};
+	
+	/**
+	 * Constructor for all pieces
+	 * @param pieceCoordinate the coordinates of this piece on the board
+	 * @param pieceColor the ChessColor of this piece
+	 * @param pieceType an int from 0 to 5 representing if this piece will be a Pawn, Rook, Knight, Bishop, Queen, or King
+	 */
+	public Piece(Coordinate pieceCoordinate, ChessColor pieceColor, int pieceType) {
+		this.pieceCoordinate = pieceCoordinate;
+		this.pieceColor = pieceColor;
+		
+		if(pieceColor == ChessColor.BLACK) {
+			setPieceIcon(new ImageIcon(getClass().getResource(blackPieceIcons[pieceType])));
+		}
+
+		else {
+			setPieceIcon(new ImageIcon(getClass().getResource(whitePieceIcons[pieceType])));
+		}
+	}
 	
 	/**
 	 * 
@@ -29,7 +55,7 @@ public abstract class Piece {
 	 * 
 	 * @return the current coordinates of this piece
 	 */
-	public Coordinate getCoordinate() {
+	public Coordinate getPieceCoordinate() {
 		return this.pieceCoordinate;
 	}
 	
@@ -61,7 +87,7 @@ public abstract class Piece {
 	 * Sets the current coordinates for this piece on the board
 	 * @param coordinate the updated coordinates to be set as the current coordinates for this piece
 	 */
-	public void setCoordinate(Coordinate coordinate) {
+	public void setPieceCoordinate(Coordinate coordinate) {
 		this.pieceCoordinate.setRow(coordinate.getRow());
 		this.pieceCoordinate.setCol(coordinate.getCol());
 	}
@@ -80,6 +106,6 @@ public abstract class Piece {
 		
 		return p.getClass() == this.getClass() &&
 			   p.getPieceColor() == pieceColor &&
-			   p.getCoordinate() == pieceCoordinate;
+			   p.getPieceCoordinate() == pieceCoordinate;
 	}
 }

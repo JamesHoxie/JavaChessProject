@@ -19,37 +19,37 @@ public class Pawn extends Piece {
 	//member variable, set to true if this pawn has just used its double move, used later for other pawns to 
 	//check if they are allowed to capture this piece in passing (en passant)
 	private boolean enPassant = false;
+	private int upOrDown;
 	
 	/**
 	 * Class constructor, sets the coordinates and color for this Pawn
-	 * @param coordinate the current coordinates of this Pawn
-	 * @param color the ChessColor of this Pawn
+	 * @param pieceCoordinate the current coordinates of this Pawn
+	 * @param pieceColor the ChessColor of this Pawn
 	 */
-	public Pawn(Coordinate coordinate, ChessColor color) {
-		this.pieceCoordinate = coordinate;
-		this.pieceColor = color;
+	public Pawn(Coordinate pieceCoordinate, ChessColor pieceColor) {
+		super(pieceCoordinate, pieceColor, 0);		
 		
-		if(color == ChessColor.BLACK) {
-			this.pieceIcon = new ImageIcon(getClass().getResource("/resources/BlackPawn.png"));
+		//set if this pawn will be able to move up the board or down the board, depending on color
+		if(pieceColor == ChessColor.WHITE) {
+			upOrDown = -1;
 		}
-		
+
 		else {
-			this.pieceIcon = new ImageIcon(getClass().getResource("/resources/WhitePawn.png"));
+			upOrDown = 1;
 		}
-		
 	}
 	
 	//for use in checking for check and checkmate, only generate diagonals this pawn can move to
 	public Coordinate[] generateAttackSpaces(Tile[][] tiles) {
 		ArrayList<Coordinate> moves = new ArrayList<Coordinate>();
 		int upOrDown, dstCol, dstRow;
-		int srcRow = pieceCoordinate.getRow();
-		int srcCol = pieceCoordinate.getCol();
+		int srcRow = getPieceCoordinate().getRow();
+		int srcCol = getPieceCoordinate().getCol();
 		int rowSize = tiles[0].length;
 		int colSize = tiles.length;
 		
 		//set if this pawn will be able to move up the board or down the board, depending on color
-		if(pieceColor == ChessColor.WHITE) {
+		if(getPieceColor() == ChessColor.WHITE) {
 			upOrDown = -1;
 		}
 		
@@ -63,7 +63,7 @@ public class Pawn extends Piece {
 
 		if(Coordinate.isValidCoordinate(new Coordinate(dstRow, dstCol), rowSize, colSize) &&
 				!(tiles[dstRow][dstCol].isEmpty()) &&
-				tiles[dstRow][dstCol].getPiece().getPieceColor() != pieceColor) {
+				tiles[dstRow][dstCol].getPiece().getPieceColor() != getPieceColor()) {
 			
 			moves.add(new Coordinate(dstRow, dstCol));
 		}
@@ -74,7 +74,7 @@ public class Pawn extends Piece {
 
 		if(Coordinate.isValidCoordinate(new Coordinate(dstRow, dstCol), rowSize, colSize) &&
 				!(tiles[dstRow][dstCol].isEmpty()) &&
-				tiles[dstRow][dstCol].getPiece().getPieceColor() != pieceColor) {
+				tiles[dstRow][dstCol].getPiece().getPieceColor() != getPieceColor()) {
 			
 			moves.add(new Coordinate(dstRow, dstCol));
 		}
@@ -87,21 +87,12 @@ public class Pawn extends Piece {
 	@Override
 	public Coordinate[] generateMoves(Tile[][] tiles) {
 		ArrayList<Coordinate> moves = new ArrayList<Coordinate>();
-		int upOrDown, dstCol, dstRow, intCol, intRow;
-		int srcRow = pieceCoordinate.getRow();
-		int srcCol = pieceCoordinate.getCol();
+		int dstCol, dstRow, intCol, intRow;
+		int srcRow = getPieceCoordinate().getRow();
+		int srcCol = getPieceCoordinate().getCol();
 		int rowSize = tiles[0].length;
 		int colSize = tiles.length;
 		Coordinate[] attackSpaces = generateAttackSpaces(tiles);
-		
-		//set if this pawn will be able to move up the board or down the board, depending on color
-		if(pieceColor == ChessColor.WHITE) {
-			upOrDown = -1;
-		}
-		
-		else {
-			upOrDown = 1;
-		}
 		
 		//check if pawn can use double move
 		if((srcRow == 1 && upOrDown == 1) || (srcRow == 6 && upOrDown == -1)) {

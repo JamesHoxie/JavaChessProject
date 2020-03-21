@@ -16,29 +16,11 @@ import Utils.Coordinate;
 public class King extends Piece {
 	/**
 	 * Class constructor, sets the coordinates and color for this King
-	 * @param coordinate the current coordinates of this King
-	 * @param color the ChessColor of this King
+	 * @param pieceCoordinate the current coordinates of this King
+	 * @param pieceColor the ChessColor of this King
 	 */
-	public King(Coordinate coordinate, ChessColor color) {
-		this.pieceCoordinate = coordinate;
-		this.pieceColor = color;
-		
-		if(color == ChessColor.BLACK) {
-			this.pieceIcon = new ImageIcon(getClass().getResource("/resources/BlackKing.png"));
-		}
-		
-		else {
-			this.pieceIcon = new ImageIcon(getClass().getResource("/resources/WhiteKing.png"));
-		}
-		
-	}
-	
-	public boolean inCheck(Tile[][] tiles, Coordinate currPosition) {
-		return false;
-	}
-	
-	public boolean inCheckMate(Tile[][] tiles, Coordinate currPosition) {
-		return false;
+	public King(Coordinate pieceCoordinate, ChessColor pieceColor) {
+		super(pieceCoordinate, pieceColor, 5);
 	}
 
 	//moves one space in any direction as long as that space would not put him in check
@@ -46,8 +28,8 @@ public class King extends Piece {
 	public Coordinate[] generateMoves(Tile[][] tiles) {
 		ArrayList<Coordinate> moves = new ArrayList<Coordinate>();
 		
-		int srcRow = pieceCoordinate.getRow();
-		int srcCol = pieceCoordinate.getCol();
+		int srcRow = getPieceCoordinate().getRow();
+		int srcCol = getPieceCoordinate().getCol();
 		int rowSize = tiles[0].length;
 		int colSize = tiles.length;
 		Coordinate nextPotentialMove;
@@ -61,7 +43,7 @@ public class King extends Piece {
 		if((Coordinate.isValidCoordinate(nextPotentialMove, rowSize, colSize))) {
 			destTile = tiles[srcRow - 1][srcCol];
 			
-			if((destTile.isEmpty() || destTile.getPiece().getPieceColor() != pieceColor)) {
+			if((destTile.isEmpty() || destTile.getPiece().getPieceColor() != getPieceColor())) {
 				moves.add(nextPotentialMove);
 			}			
 		}
@@ -71,7 +53,7 @@ public class King extends Piece {
 		if((Coordinate.isValidCoordinate(nextPotentialMove, rowSize, colSize))) {
 			destTile = tiles[srcRow - 1][srcCol + 1];
 
-			if((destTile.isEmpty() || destTile.getPiece().getPieceColor() != pieceColor)) {
+			if((destTile.isEmpty() || destTile.getPiece().getPieceColor() != getPieceColor())) {
 				moves.add(nextPotentialMove);
 			}			
 		}
@@ -81,7 +63,7 @@ public class King extends Piece {
 		if((Coordinate.isValidCoordinate(nextPotentialMove, rowSize, colSize))) {
 			destTile = tiles[srcRow][srcCol + 1];
 
-			if((destTile.isEmpty() ||destTile.getPiece().getPieceColor() != pieceColor)) {
+			if((destTile.isEmpty() ||destTile.getPiece().getPieceColor() != getPieceColor())) {
 				moves.add(nextPotentialMove);
 			}			
 		}
@@ -91,7 +73,7 @@ public class King extends Piece {
 		if((Coordinate.isValidCoordinate(nextPotentialMove, rowSize, colSize))) {
 			destTile = tiles[srcRow + 1][srcCol + 1];
 
-			if((destTile.isEmpty() ||destTile.getPiece().getPieceColor() != pieceColor)) {
+			if((destTile.isEmpty() ||destTile.getPiece().getPieceColor() != getPieceColor())) {
 				moves.add(nextPotentialMove);
 			}			
 		}
@@ -101,7 +83,7 @@ public class King extends Piece {
 		if((Coordinate.isValidCoordinate(nextPotentialMove, rowSize, colSize))) {
 			destTile = tiles[srcRow + 1][srcCol];
 
-			if((destTile.isEmpty() ||destTile.getPiece().getPieceColor() != pieceColor)) {
+			if((destTile.isEmpty() ||destTile.getPiece().getPieceColor() != getPieceColor())) {
 				moves.add(nextPotentialMove);
 			}			
 		}
@@ -111,7 +93,7 @@ public class King extends Piece {
 		if((Coordinate.isValidCoordinate(nextPotentialMove, rowSize, colSize))) {
 			destTile = tiles[srcRow + 1][srcCol - 1];
 
-			if((destTile.isEmpty() ||destTile.getPiece().getPieceColor() != pieceColor)) {
+			if((destTile.isEmpty() ||destTile.getPiece().getPieceColor() != getPieceColor())) {
 				moves.add(nextPotentialMove);
 			}			
 		}
@@ -121,7 +103,7 @@ public class King extends Piece {
 		if((Coordinate.isValidCoordinate(nextPotentialMove, rowSize, colSize))) {
 			destTile = tiles[srcRow][srcCol - 1];
 
-			if((destTile.isEmpty() ||destTile.getPiece().getPieceColor() != pieceColor)) {
+			if((destTile.isEmpty() ||destTile.getPiece().getPieceColor() != getPieceColor())) {
 				moves.add(nextPotentialMove);
 			}			
 		}
@@ -131,7 +113,7 @@ public class King extends Piece {
 		if((Coordinate.isValidCoordinate(nextPotentialMove, rowSize, colSize))) {
 			destTile = tiles[srcRow - 1][srcCol - 1];
 
-			if((destTile.isEmpty() ||destTile.getPiece().getPieceColor() != pieceColor)) {
+			if((destTile.isEmpty() ||destTile.getPiece().getPieceColor() != getPieceColor())) {
 				moves.add(nextPotentialMove);
 			}			
 		}	
