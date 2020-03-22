@@ -1,6 +1,7 @@
 package Board;
 
 import java.awt.GridLayout;
+import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class Board extends JPanel{
 	private King blackKing, whiteKing;
 	private ArrayList<Piece> whitePieces = new ArrayList<Piece>();
 	private ArrayList<Piece> blackPieces = new ArrayList<Piece>();
+	private TextArea actionText;
 
 	//function sets up pieces on board for start of game
 	void setUpPieces() {
@@ -154,7 +156,7 @@ public class Board extends JPanel{
 	}
 	
 	//class constructor, takes x and y size and assigns, also fills tiles array with empty tiles and sets up pieces on the board
-	public Board(int xSize, int ySize) {
+	public Board(int xSize, int ySize, TextArea actionText) {
 		setLayout(new GridLayout(8, 8));
 		this.xSize = xSize;
 		this.ySize = ySize;
@@ -163,6 +165,9 @@ public class Board extends JPanel{
 		this.currentPlayerColor = ChessColor.WHITE;
 		setUpTiles();
 		setUpPieces();
+		this.actionText = actionText;
+		actionText.append("Turn " + turnNumber + "\n");
+		actionText.append(currentPlayerColor + " player's turn..." + "\n");
 	}
 	
 	/**
@@ -431,10 +436,16 @@ public class Board extends JPanel{
 	public Pawn isEnPassantMove(Move move) {
 		Tile sourceTile = move.getSourceTile();
 		Piece piece = sourceTile.getPiece();
-		int enemyCol1 = piece.getPieceCoordinate().getCol() - 1;
-		int enemyCol2 = piece.getPieceCoordinate().getCol() + 1;
-		Coordinate enemyCoordinate1 = new Coordinate(piece.getPieceCoordinate().getRow(), enemyCol1);
-		Coordinate enemyCoordinate2 = new Coordinate(piece.getPieceCoordinate().getRow(), enemyCol2);
+		int enemyCol1 = -1, enemyCol2 = -1;
+		Coordinate enemyCoordinate1 = null, enemyCoordinate2 = null;
+		
+		if(piece != null) {
+			enemyCol1 = piece.getPieceCoordinate().getCol() - 1;
+			enemyCol2 = piece.getPieceCoordinate().getCol() + 1;
+			enemyCoordinate1 = new Coordinate(piece.getPieceCoordinate().getRow(), enemyCol1);
+			enemyCoordinate2 = new Coordinate(piece.getPieceCoordinate().getRow(), enemyCol2);
+		}
+		
 		Piece enemyPiece1 = null;
 		Piece enemyPiece2 = null;
 		
@@ -584,10 +595,6 @@ public class Board extends JPanel{
 	 * move to try again. if it did not, then commit the move by updating the pieces icons on the board and switch turns
 	 */
 	public void tryMove() {
-		if(playerInCheck != null) {
-			checkForCheckMate(playerInCheck);
-		}
-		
 		if(isValidMove(currentMove)) {
 			Piece piece = currentMove.getSourceTile().getPiece();
 			int row = piece.getPieceCoordinate().getRow();
@@ -617,7 +624,7 @@ public class Board extends JPanel{
 				checkForCheck(currentPlayerColor);
 				
 				if(playerInCheck != null) {
-					JOptionPane.showMessageDialog(null, playerInCheck + " player is in check");
+					actionText.append(playerInCheck + " player is in check\n");
 				}
 				
 				if(playerInCheck == currentPlayerColor) {
@@ -625,7 +632,7 @@ public class Board extends JPanel{
 					checkForCheckMate(currentPlayerColor);
 					
 					if(playerInCheckMate == currentPlayerColor) {
-						JOptionPane.showMessageDialog(null, playerInCheckMate + " player is in check mate!");
+						actionText.append("GAME SET! \n" + playerInCheckMate + " player is in checkmate!");
 						//TODO: game is over, adjust shut down procedures
 						System.exit(0);
 					}
@@ -633,6 +640,8 @@ public class Board extends JPanel{
 				}
 				
 				turnNumber++;
+				actionText.append("Turn " + turnNumber + "\n");
+				actionText.append(currentPlayerColor + " player's turn..." + "\n");
 			}
 
 		}

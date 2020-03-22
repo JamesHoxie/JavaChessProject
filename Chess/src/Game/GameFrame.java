@@ -17,13 +17,12 @@ import Board.Board;
  *
  */
 public class GameFrame extends JFrame {
-	Board gameBoard = new Board(8, 8);
 	JLabel titleBox = new JLabel("This textbox could be used for a title", JLabel.CENTER);
 	//TODO: make menuBox a new class with a menu and buttons (extend jpanel)
 	JLabel menuBox = new JLabel("This textbox could be used for a menu");
 	JLabel pieceBox = new JLabel("This textbox could be used for captured pieces");
-	TextArea actionText = new TextArea("Chess game actions will appear here", 5, 100);
-	
+	TextArea actionText = new TextArea("", 5, 100);
+	Board gameBoard = new Board(8, 8, actionText);
 	/**
 	 * Class Constructor
 	 */

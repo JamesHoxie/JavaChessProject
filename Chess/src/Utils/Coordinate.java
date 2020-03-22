@@ -27,7 +27,8 @@ public class Coordinate{
 	 * @return true if this coordinate is within the bounds of rowSize and colSize
 	 */
 	public static boolean isValidCoordinate(Coordinate coordinate, int rowSize, int colSize) {
-		return coordinate.getRow() >= 0 && 
+		return coordinate != null &&
+			   coordinate.getRow() >= 0 && 
 			   coordinate.getRow() < rowSize &&
 			   coordinate.getCol() >= 0 &&
 			   coordinate.getCol() < colSize;
