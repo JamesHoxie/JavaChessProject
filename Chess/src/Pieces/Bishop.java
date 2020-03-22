@@ -131,7 +131,7 @@ public class Bishop extends Piece {
 
 	//moves diagonal in any direction
 	@Override
-	public Coordinate[] generateMoves(Tile[][] tiles) {
+	public Coordinate[] generateMoves(Tile[][] tiles, int turnNumber) {
 		return generateBishopMoves(tiles, this);
 	}
 }

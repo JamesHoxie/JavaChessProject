@@ -25,7 +25,7 @@ public class Knight extends Piece {
 
 	//moves in L shape
 	@Override
-	public Coordinate[] generateMoves(Tile[][] tiles) {
+	public Coordinate[] generateMoves(Tile[][] tiles, int turnNumber) {
 		ArrayList<Coordinate> potentialMoves = new ArrayList<Coordinate>();
 		ArrayList<Coordinate> validMoves = new ArrayList<Coordinate>();
 		

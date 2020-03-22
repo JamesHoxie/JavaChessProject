@@ -8,6 +8,8 @@ import Board.Tile;
 import Utils.ChessColor;
 import Utils.Coordinate;
 
+//TODO: Implement castling
+
 /**
  * This class represents the King piece in a chess game.
  * @author James Hoxie
@@ -25,7 +27,7 @@ public class King extends Piece {
 
 	//moves one space in any direction as long as that space would not put him in check
 	@Override
-	public Coordinate[] generateMoves(Tile[][] tiles) {
+	public Coordinate[] generateMoves(Tile[][] tiles, int turnNumber) {
 		ArrayList<Coordinate> moves = new ArrayList<Coordinate>();
 		
 		int srcRow = getPieceCoordinate().getRow();

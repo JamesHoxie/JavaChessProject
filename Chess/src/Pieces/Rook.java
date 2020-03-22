@@ -125,7 +125,7 @@ public class Rook extends Piece {
 
 	//moves straight, never diagonal
 	@Override
-	public Coordinate[] generateMoves(Tile[][] tiles) {
+	public Coordinate[] generateMoves(Tile[][] tiles, int turnNumber) {
 		return generateRookMoves(tiles, this);
 	}
 }

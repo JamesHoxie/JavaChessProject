@@ -47,9 +47,10 @@ public abstract class Piece {
 	/**
 	 * 
 	 * @param tiles 2D array representing the board being played on
+	 * @param turnNumber the current turn number of this chess game
 	 * @return array containing all valid moves this piece can take given its position on the board and the rules of chess
 	 */
-	public abstract Coordinate[] generateMoves(Tile[][] tiles);
+	public abstract Coordinate[] generateMoves(Tile[][] tiles, int turnNumber);
 	
 	/**
 	 * 

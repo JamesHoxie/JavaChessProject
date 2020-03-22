@@ -22,6 +22,7 @@ import Utils.Coordinate;
 //board class contains 2d array of tiles that contain pieces used for play
 public class Board extends JPanel{
 	private int xSize, ySize;
+	private int turnNumber = 1;
 	private Tile[][] tiles;
 	private Move currentMove;
 	private ChessColor currentPlayerColor;
@@ -267,7 +268,7 @@ public class Board extends JPanel{
 			}
 
 			else {
-				moves = piece.generateMoves(tiles);
+				moves = piece.generateMoves(tiles, turnNumber);
 			}
 
 			for(Coordinate c: moves) {
@@ -315,7 +316,7 @@ public class Board extends JPanel{
 			
 			System.out.println(piece);
 			
-			moves = piece.generateMoves(tiles);
+			moves = piece.generateMoves(tiles, turnNumber);
 
 			for(Coordinate c: moves) {
 				sourceTile = getTile(piece.getPieceCoordinate());
@@ -371,12 +372,103 @@ public class Board extends JPanel{
 		return tiles[coordinate.getRow()][coordinate.getCol()];
 	}
 	
+	public Piece[] executeCastlingMove(Move move) {
+		return null;
+	}
+	
+	public void undoCastlingMove(Piece[] originalPlacements, Move move) {
+		
+	}
+	
+	public boolean isCastlingMove(Move move) {
+		return false;
+	}
+	
+	public Piece[] executeEnPassantMove(Move move, Pawn enemyPawn) {
+		Piece[] originalPlacements = executeStandardMove(move);
+		originalPlacements[1] = enemyPawn;
+		
+		getTile(enemyPawn.getPieceCoordinate()).setPiece(null);
+		
+		if(enemyPawn.getPieceColor() == ChessColor.BLACK) {
+			blackPieces.remove(enemyPawn);
+		}
+		
+		else {
+			whitePieces.remove(enemyPawn);
+		}
+		
+		return originalPlacements;
+	}
+	
+	public void undoEnPassantMove(Piece[] originalPlacements, Move move) {
+		Tile sourceTile = move.getSourceTile();
+		Tile destinationTile = move.getDestinationTile();
+		Piece sourcePiece = originalPlacements[0];
+		Piece enemyPawn = originalPlacements[1];
+		
+		sourcePiece.setPieceCoordinate(sourceTile.getCoordinate());
+		sourceTile.setPiece(sourcePiece);
+		destinationTile.setPiece(null);
+		getTile(enemyPawn.getPieceCoordinate()).setPiece(enemyPawn);
+		
+		if(enemyPawn != null) {
+			if(enemyPawn.getPieceColor() == ChessColor.BLACK) {
+				blackPieces.add(enemyPawn);
+			}
+			
+			else {
+				whitePieces.add(enemyPawn);
+			}
+		}
+	}
+	
+	/**
+	 * determines if this move is an enpassant move
+	 * @param move the move being checked 
+	 * @return the pawn to be captured enpassant if this move is an enpassant move or null otherwise
+	 */
+	public Pawn isEnPassantMove(Move move) {
+		Tile sourceTile = move.getSourceTile();
+		Piece piece = sourceTile.getPiece();
+		int enemyCol1 = piece.getPieceCoordinate().getCol() - 1;
+		int enemyCol2 = piece.getPieceCoordinate().getCol() + 1;
+		Coordinate enemyCoordinate1 = new Coordinate(piece.getPieceCoordinate().getRow(), enemyCol1);
+		Coordinate enemyCoordinate2 = new Coordinate(piece.getPieceCoordinate().getRow(), enemyCol2);
+		Piece enemyPiece1 = null;
+		Piece enemyPiece2 = null;
+		
+		if(Coordinate.isValidCoordinate(enemyCoordinate1, xSize, ySize)) {
+			enemyPiece1 = getTile(enemyCoordinate1).getPiece();
+		}
+		
+		if(Coordinate.isValidCoordinate(enemyCoordinate2, xSize, ySize)) {
+			enemyPiece2 = getTile(enemyCoordinate2).getPiece();
+		}
+		
+		if(piece instanceof Pawn &&
+		  (enemyPiece1 instanceof Pawn &&
+		  ((Pawn) enemyPiece1).canBeCapturedEnPassant(turnNumber))) {
+			
+			return (Pawn) enemyPiece1;
+		}
+		
+		if(piece instanceof Pawn &&
+		  (enemyPiece2 instanceof Pawn &&
+		  ((Pawn) enemyPiece2).canBeCapturedEnPassant(turnNumber))) {
+		  
+			return (Pawn) enemyPiece2;
+		}	
+		
+		return null;
+	}
+	
 	//checks if current move is valid
 	public boolean isValidMove(Move move) {
 		Tile sourceTile = move.getSourceTile();
 		Tile destinationTile = move.getDestinationTile();
 		Piece piece = sourceTile.getPiece();		
-		Coordinate[] validMoves = piece.generateMoves(tiles);
+		Coordinate[] validMoves = piece.generateMoves(tiles, turnNumber);
 		
 		//check all generated moves, if coordinates of any match coordinates of destination tile then
 		//move is valid
@@ -389,8 +481,7 @@ public class Board extends JPanel{
 		return false;
 	}
 	
-	//used to undo the last move taken in the event of a move putting a player into check or keeping them in check
-	public void undoMove(Piece[] originalPlacements, Move move) {
+	public void undoStandardMove(Piece[] originalPlacements, Move move) {
 		Tile sourceTile = move.getSourceTile();
 		Tile destinationTile = move.getDestinationTile();
 		Piece sourcePiece = originalPlacements[0];
@@ -411,8 +502,23 @@ public class Board extends JPanel{
 		}
 	}
 	
-	//moves piece from source tile to destination for the current move, does not adjust icons
-	public Piece[] executeMove(Move move) {
+	//used to undo the last move taken in the event of a move putting a player into check or keeping them in check
+	public void undoMove(Piece[] originalPlacements, Move move) {
+		Pawn enemyPawn = isEnPassantMove(move);
+		if(enemyPawn != null) {
+			undoEnPassantMove(originalPlacements, move);
+		}
+		
+		else if(isCastlingMove(move)) {
+			undoCastlingMove(originalPlacements, move);
+		}
+		
+		else {
+			undoStandardMove(originalPlacements, move);
+		}
+	}
+	
+	public Piece[] executeStandardMove(Move move) {
 		Tile sourceTile = move.getSourceTile();
 		Tile destinationTile = move.getDestinationTile();
 		Piece sourcePiece = sourceTile.getPiece();
@@ -436,13 +542,38 @@ public class Board extends JPanel{
 		return orignalPlacements;
 	}
 	
+	//determine type of move to execute (enpassant, castling, or a standard move)
+	//moves piece from source tile to destination for the current move, does not adjust icons
+	public Piece[] executeMove(Move move) {
+		Pawn enemyPawn = isEnPassantMove(move);
+		
+		if(enemyPawn != null) {
+			return executeEnPassantMove(move, enemyPawn);
+		}
+		
+		else if(isCastlingMove(move)) {
+			return executeCastlingMove(move);
+		}
+		
+		//move is not a special move
+		else {
+			return executeStandardMove(move);
+		}
+	}
+	
 	//sets icons on board for move
 	public void commitMove() {
-		Tile sourceTile = currentMove.getSourceTile();
-		Tile destinationTile = currentMove.getDestinationTile();
-
-		sourceTile.displayPiece();
-		destinationTile.displayPiece();
+		for(int r = 0; r < tiles[0].length; r++) {
+			for(int c = 0; c < tiles.length; c++) {
+				tiles[r][c].displayPiece();
+			}
+		}
+		
+//		Tile sourceTile = currentMove.getSourceTile();
+//		Tile destinationTile = currentMove.getDestinationTile();
+//
+//		sourceTile.displayPiece();
+//		destinationTile.displayPiece();
 	}
 	
 	/**
@@ -459,8 +590,7 @@ public class Board extends JPanel{
 		
 		if(isValidMove(currentMove)) {
 			Piece piece = currentMove.getSourceTile().getPiece();
-			System.out.println("row: " + currentMove.getSourceTile().getPiece().getPieceCoordinate().getRow());
-			System.out.println("col: " + currentMove.getSourceTile().getPiece().getPieceCoordinate().getCol());
+			int row = piece.getPieceCoordinate().getRow();
 			Piece[] originalPlacements;
 			originalPlacements = executeMove(currentMove);
 			checkForCheck(currentPlayerColor);
@@ -473,6 +603,11 @@ public class Board extends JPanel{
 			//player was not put in check by move, commit move
 			else {
 				commitMove();
+				
+				//set enpassant status if this piece is a pawn
+				if(piece instanceof Pawn) {
+					((Pawn) piece).setEnPassant(row, turnNumber);
+				}
 				
 				//check if a pawn can be promoted
 				checkForPawnPromotion();
@@ -497,10 +632,9 @@ public class Board extends JPanel{
 					
 				}
 				
+				turnNumber++;
 			}
-			
-			System.out.println("drow: " + piece.getPieceCoordinate().getRow());
-			System.out.println("dcol: " + piece.getPieceCoordinate().getCol());
+
 		}
 
 		

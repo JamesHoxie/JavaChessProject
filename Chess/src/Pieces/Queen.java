@@ -25,7 +25,7 @@ public class Queen extends Piece {
 
 	//moves straight or diagonal, combine moves that a rook and bishop could take from current position
 	@Override
-	public Coordinate[] generateMoves(Tile[][] tiles) {
+	public Coordinate[] generateMoves(Tile[][] tiles, int turnNumber) {
 		Coordinate[] rookMoves = Rook.generateRookMoves(tiles, this);
 		Coordinate[] bishopMoves = Bishop.generateBishopMoves(tiles, this);
 		Coordinate[] queenMoves = new Coordinate[rookMoves.length + bishopMoves.length];

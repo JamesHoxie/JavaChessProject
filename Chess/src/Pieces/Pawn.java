@@ -8,7 +8,6 @@ import Board.Tile;
 import Utils.ChessColor;
 import Utils.Coordinate;
 
-//TODO: Implement piece promotion and en passant
 
 /**
  * This class represents the Pawn piece in a chess game.
@@ -16,10 +15,14 @@ import Utils.Coordinate;
  *
  */
 public class Pawn extends Piece {
-	//member variable, set to true if this pawn has just used its double move, used later for other pawns to 
-	//check if they are allowed to capture this piece in passing (en passant)
+	//Member variable, set to true if this pawn can be captured en passant
 	private boolean enPassant = false;
+	//Member variable, stores the turn that this pawn used its double move
+	private int turnUsedDoubleMove = -1;
+	//Member variable, set to 1 or -1 to determine if this pawn moves up or down the board
 	private int upOrDown;
+	//Member variable, stores the last row this pawn was on before this move
+	private int lastRow = -1;
 	
 	/**
 	 * Class constructor, sets the coordinates and color for this Pawn
@@ -27,9 +30,8 @@ public class Pawn extends Piece {
 	 * @param pieceColor the ChessColor of this Pawn
 	 */
 	public Pawn(Coordinate pieceCoordinate, ChessColor pieceColor) {
-		super(pieceCoordinate, pieceColor, 0);		
+		super(pieceCoordinate, pieceColor, 0);
 		
-		//set if this pawn will be able to move up the board or down the board, depending on color
 		if(pieceColor == ChessColor.WHITE) {
 			upOrDown = -1;
 		}
@@ -37,6 +39,10 @@ public class Pawn extends Piece {
 		else {
 			upOrDown = 1;
 		}
+	}
+	
+	public int getUpOrDown() {
+		return upOrDown;
 	}
 	
 	//for use in checking for check and checkmate, only generate diagonals this pawn can move to
@@ -85,7 +91,7 @@ public class Pawn extends Piece {
 	//moves 1 space up or down depending on color, or moves diagonal to capture pieces
 	//can move 2 spaces on its first move
 	@Override
-	public Coordinate[] generateMoves(Tile[][] tiles) {
+	public Coordinate[] generateMoves(Tile[][] tiles, int turnNumber) {
 		ArrayList<Coordinate> moves = new ArrayList<Coordinate>();
 		int dstCol, dstRow, intCol, intRow;
 		int srcRow = getPieceCoordinate().getRow();
@@ -121,6 +127,64 @@ public class Pawn extends Piece {
 			moves.add(c);
 		}
 		
+		//check for enpassant captures
+		dstRow = srcRow + upOrDown*1;
+		dstCol = srcCol + 1;
+
+		if(Coordinate.isValidCoordinate(new Coordinate(dstRow, dstCol), rowSize, colSize) &&
+				Coordinate.isValidCoordinate(new Coordinate(srcRow, dstCol), rowSize, colSize) && 
+				tiles[dstRow][dstCol].isEmpty() &&
+				tiles[srcRow][dstCol].getPiece() instanceof Pawn &&
+				tiles[srcRow][dstCol].getPiece().getPieceColor() != getPieceColor() &&
+				((Pawn) tiles[srcRow][dstCol].getPiece()).canBeCapturedEnPassant(turnNumber)) {
+			moves.add(new Coordinate(dstRow, dstCol));
+		}
+		
+		dstCol = srcCol - 1;
+		
+		if(Coordinate.isValidCoordinate(new Coordinate(dstRow, dstCol), rowSize, colSize) &&
+				Coordinate.isValidCoordinate(new Coordinate(srcRow, dstCol), rowSize, colSize) &&
+				tiles[dstRow][dstCol].isEmpty() &&
+				tiles[srcRow][dstCol].getPiece() instanceof Pawn &&
+				tiles[srcRow][dstCol].getPiece().getPieceColor() != getPieceColor() &&
+				((Pawn) tiles[srcRow][dstCol].getPiece()).canBeCapturedEnPassant(turnNumber)) {
+			moves.add(new Coordinate(dstRow, dstCol));
+		}	
+		
 		return moves.toArray(new Coordinate[moves.size()]);
+	}
+	
+	/**
+	 * Used to determine if this pawn can be captured with an enpassant move
+	 * @param turnNumber the current turn this move is being attempted on
+	 * @return true if this pawn can be captured enpassant this turn
+	 */
+	public boolean canBeCapturedEnPassant(int turnNumber) {
+		return enPassant && (turnNumber - turnUsedDoubleMove == 1);
+	}
+	
+	/**
+	 * Returns whether this pawn has just used its double move
+	 * @return true if the last move this pawn made was a double move
+	 */
+	public boolean usedDoubleMove() {
+		return lastRow != -1 && Math.abs(lastRow - getPieceCoordinate().getRow()) == 2;
+	}
+	
+	/**
+	 * Sets the enPassant boolean for this pawn based on its last position
+	 * @param row the last row this pawn was on before its curernt move
+	 */
+	public void setEnPassant(int row, int turnNumber) {
+		lastRow = row;
+		
+		if(usedDoubleMove()) {
+			turnUsedDoubleMove = turnNumber;
+			enPassant = true;
+		}
+		
+		else {
+			enPassant = false;
+		}		
 	}
 }
