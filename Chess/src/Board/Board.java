@@ -633,6 +633,7 @@ public class Board extends JPanel{
 					
 					if(playerInCheckMate == currentPlayerColor) {
 						actionText.append("GAME SET! \n" + playerInCheckMate + " player is in checkmate!");
+						JOptionPane.showMessageDialog(null, "GAME SET! \n" + playerInCheckMate + " player is in checkmate!");
 						//TODO: game is over, adjust shut down procedures
 						System.exit(0);
 					}
