@@ -4,9 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.TextArea;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import Board.Board;
 
@@ -19,10 +22,11 @@ import Board.Board;
 public class GameFrame extends JFrame {
 	JLabel titleBox = new JLabel("This textbox could be used for a title", JLabel.CENTER);
 	//TODO: make menuBox a new class with a menu and buttons (extend jpanel)
-	JLabel menuBox = new JLabel("This textbox could be used for a menu");
+	JPanel menuBox = new JPanel();
 	JLabel pieceBox = new JLabel("This textbox could be used for captured pieces");
 	TextArea actionText = new TextArea("", 5, 100);
 	Board gameBoard = new Board(8, 8, actionText);
+	JButton saveGameButton = new JButton("Save");
 	/**
 	 * Class Constructor
 	 */
@@ -56,6 +60,7 @@ public class GameFrame extends JFrame {
 		//setters for menuBox
 		menuBox.setOpaque(true);
 		menuBox.setBackground(backgroundColor);
+		menuBox.add(saveGameButton);
 		
 		//add components
 		add(gameBoard, BorderLayout.CENTER);

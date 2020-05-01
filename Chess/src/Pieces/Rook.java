@@ -15,12 +15,39 @@ import Utils.Coordinate;
  */
 public class Rook extends Piece {
 	/**
+	 * Member variable to keep track of this Rook's position for the purpose of castling
+	 */
+	private boolean hasMoved = false;
+	
+	/**
 	 * Class constructor, sets the coordinates and color for this Rook
 	 * @param pieceCoordinate the current coordinates of this Rook
 	 * @param pieceColor the ChessColor of this Rook
 	 */
 	public Rook(Coordinate pieceCoordinate, ChessColor pieceColor) {
 		super(pieceCoordinate, pieceColor, 1);
+	}
+	
+	/**
+	 * sets this Rook's status of hasMoved to true
+	 */
+	public void setRookHasMoved() {
+		hasMoved = true;
+	}
+	
+	/**
+	 * sets this Rook's status of hasMoved to false
+	 */
+	public void setRookHasNotMoved() {
+		hasMoved = false;
+	}
+	
+	/**
+	 * Checks if this Rook has been moved at least once this game
+	 * @return true if this Rook has been moved at least once this game, false otherwise
+	 */
+	public boolean hasMoved() {
+		return hasMoved;
 	}
 	
 	//movement calculations done statically to allow queen piece to use

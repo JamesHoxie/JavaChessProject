@@ -17,6 +17,17 @@ import Utils.Coordinate;
  */
 public class King extends Piece {
 	/**
+	 * Member variable to keep track of this King's position for the purpose of castling
+	 */
+	private boolean hasMoved = false;
+	
+	
+	/**
+	 * Member variable to keep track of whether this King is currently in check
+	 */
+	private boolean isInCheck = false;
+	
+	/**
 	 * Class constructor, sets the coordinates and color for this King
 	 * @param pieceCoordinate the current coordinates of this King
 	 * @param pieceColor the ChessColor of this King
@@ -25,6 +36,52 @@ public class King extends Piece {
 		super(pieceCoordinate, pieceColor, 5);
 	}
 
+	
+	/**
+	 * sets this King to be in check
+	 */
+	public void setKingInCheck() {
+		isInCheck = true;
+	}
+	
+	/**
+	 * sets this King to be out of check
+	 */
+	public void setKingOutOfCheck() {
+		isInCheck = false;
+	}
+	
+	
+	/**
+	 * Checks if this King is currently in check
+	 * @return true if this King is in check, false otherwise
+	 */
+	public boolean isInCheck() {
+		return isInCheck;
+	}
+	
+	/**
+	 * sets this King's status of hasMoved to true
+	 */
+	public void setKingHasMoved() {
+		hasMoved = true;
+	}
+	
+	/**
+	 * sets this King's status of hasMoved to false
+	 */
+	public void setKingHasNotMoved() {
+		hasMoved = false;
+	}
+	
+	/**
+	 * Checks if this King has been moved at least once this game
+	 * @return true if this King has been moved at least once this game, false otherwise
+	 */
+	public boolean hasMoved() {
+		return hasMoved;
+	}
+	
 	//moves one space in any direction as long as that space would not put him in check
 	@Override
 	public Coordinate[] generateMoves(Tile[][] tiles, int turnNumber) {
@@ -119,6 +176,41 @@ public class King extends Piece {
 				moves.add(nextPotentialMove);
 			}			
 		}	
+		
+		//check for castling moves
+		if(!hasMoved && !isInCheck) {
+			Rook rook;
+			
+			for(int i = 0; i < tiles[srcRow].length; i++) {
+				if(tiles[srcRow][i].getPiece() instanceof Rook) {
+					rook = (Rook) tiles[srcRow][i].getPiece();
+					
+					//check that all spaces in between rook and king are empty
+					if(!(rook.hasMoved()) && rook.getPieceColor() == getPieceColor()) {
+						if(srcCol < rook.getPieceCoordinate().getCol()) {
+							for(int j = srcCol + 1; j < rook.getPieceCoordinate().getCol(); j++) {
+								if(!(tiles[srcRow][j].isEmpty())) {
+									break;
+								}
+							}
+							
+							moves.add(new Coordinate(srcRow, rook.getPieceCoordinate().getCol()));
+						}
+						
+						//srcCol > rook.getPieceCoordinate().getCol()
+						else {
+							for(int j = srcCol - 1; j < rook.getPieceCoordinate().getCol() + 1; j--) {
+								if(!(tiles[srcRow][j].isEmpty())) {
+									break;
+								}
+							}
+							
+							moves.add(new Coordinate(srcRow, rook.getPieceCoordinate().getCol()));
+						}
+					}
+				}
+			}
+		}
 		
 		return moves.toArray(new Coordinate[moves.size()]);
 	}

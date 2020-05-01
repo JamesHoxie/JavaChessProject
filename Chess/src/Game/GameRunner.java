@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import Board.Tile;
 import Utils.ChessColor;
@@ -37,12 +38,20 @@ public class GameRunner{
 	
 	public static void main(String[] args) {
 		GameFrame chessGame = new GameFrame();
-		setUpGameFrame(chessGame);
 		
-		ChessPlayer whitePlayer = new ChessPlayer(ChessColor.WHITE);
-		ChessPlayer blackPlayer = new ChessPlayer(ChessColor.BLACK);
-		//white player always goes first
-		ChessPlayer nextPlayer = whitePlayer;
+		String[] options = {"Start New Game", "Load Game", "Exit"};
+		int selection = JOptionPane.showOptionDialog(chessGame, "Welcome to chess!", "Java Chess", 0, 0, null, options, null);
+		
+		switch(selection) {
+			case 0:
+				setUpGameFrame(chessGame);
+				break;
+			case 1:
+				JOptionPane.showMessageDialog(chessGame, "Not implemented!");
+				break;
+			case 2:
+				System.exit(0);
+		}
 		
 		TurnManager turnManager = new TurnManager(chessGame.gameBoard);
 		
@@ -72,27 +81,11 @@ public class GameRunner{
             } 
         }); 
 		
+		
+		
+		
 		t1.start();
 		t2.start();
-		
-//		//basic game loop, until one player is in checkmate keep taking turns
-//		while(gameIsNotOver(whitePlayer, blackPlayer)) {
-//			nextPlayer.takeTurn();
-//			
-//			//TODO: turn switch logic
-//			
-//			nextPlayer.finishTurn();
-//			//set nextPlayer to whoever isn't taking their turn currently
-//			if(nextPlayer == whitePlayer) {
-//				nextPlayer = blackPlayer;
-//			}
-//			
-//			else {
-//				nextPlayer = whitePlayer;
-//			}
-//			
-//			//switch player taking turn
-//
-//		}	
+	
 	}
 }

@@ -171,6 +171,33 @@ public class Board extends JPanel{
 	}
 	
 	/**
+	 * sets the check status for the king matching kingColor
+	 * @param kingColor the color of the king being set
+	 * @param checkStatus true if this king is in check, false otherwise
+	 */
+	public void setKingCheckStatus(ChessColor kingColor, boolean checkStatus) {
+		if(kingColor == ChessColor.BLACK) {
+			if(checkStatus == true) {
+				blackKing.setKingInCheck();
+			}
+			
+			else {
+				blackKing.setKingOutOfCheck();
+			}
+		}
+		
+		else {
+			if(checkStatus == true) {
+				whiteKing.setKingInCheck();
+			}
+			
+			else {
+				whiteKing.setKingOutOfCheck();
+			}
+		}
+	}
+	
+	/**
 	 * This function is used to promote a pawn when it reaches the other side of the board
 	 * @param pawnToBePromoted The pawn to be promoted into a piece of promotionType
 	 * @param promotionType The type of chess piece the pawn will be promoted to (Rook, Bishop, Knight, or Queen)
@@ -329,11 +356,8 @@ public class Board extends JPanel{
 				nextPossibleMove.setSource(sourceTile);
 				nextPossibleMove.setDestination(destinationTile);
 				
-				if(isValidMove(nextPossibleMove)) {
+				if(isValidMove(nextPossibleMove) && !(isCastlingMove(nextPossibleMove))) {
 					originalPlacements = executeMove(nextPossibleMove);
-					System.out.println(nextPossibleMove.getSourceTile().getPiece());
-					System.out.println(nextPossibleMove.getDestinationTile().getCoordinate().getRow());
-					System.out.println(nextPossibleMove.getDestinationTile().getCoordinate().getCol());
 					checkForCheck(playerColor);
 					
 					if(playerInCheck != playerColor) {
@@ -378,15 +402,98 @@ public class Board extends JPanel{
 	}
 	
 	public Piece[] executeCastlingMove(Move move) {
-		return null;
+		King king = (King) move.getSourceTile().getPiece();
+		Rook rook = (Rook) move.getDestinationTile().getPiece();
+		int row = king.getPieceCoordinate().getRow();
+		int kingCol = king.getPieceCoordinate().getCol();
+		int kingCol2, kingCol3;
+		int rookCol = rook.getPieceCoordinate().getCol();
+		Piece[] originalPlacements, originalPlacements2, originalPlacements3 = {king, rook};
+		Move intermediateMove = new Move(), intermediateMove2 = new Move();
+		
+		//queen side castle
+		if(rookCol < kingCol) {
+			kingCol2 = kingCol - 1;
+			kingCol3 = kingCol - 2;		
+		}
+		
+		//king side castle
+		else {
+			kingCol2 = kingCol + 1;
+			kingCol3 = kingCol + 2;
+		}
+		
+		intermediateMove.setSource(move.getSourceTile());
+		intermediateMove.setDestination(tiles[row][kingCol2]);
+		originalPlacements = executeStandardMove(intermediateMove);
+		
+		checkForCheck(currentPlayerColor);
+		//if this move put this player in check, undo and stop castling
+		if(playerInCheck == currentPlayerColor) {
+			undoMove(originalPlacements, intermediateMove);
+			return null;
+		}
+		
+		intermediateMove2.setSource(intermediateMove.getDestinationTile());
+		intermediateMove2.setDestination(tiles[row][kingCol3]);
+		originalPlacements2 = executeStandardMove(intermediateMove2);
+			
+		checkForCheck(currentPlayerColor);
+		//if this move put this player in check, undo and stop castling
+		if(playerInCheck == currentPlayerColor) {
+			undoMove(originalPlacements2, intermediateMove2);
+			undoMove(originalPlacements, intermediateMove);
+			return null;
+		}		
+		
+		king.setPieceCoordinate(tiles[row][kingCol3].getCoordinate());
+		move.getSourceTile().setPiece(null);
+		rook.setPieceCoordinate(tiles[row][kingCol2].getCoordinate());
+		move.getDestinationTile().setPiece(null);
+		
+		getTile(rook.getPieceCoordinate()).setPiece(rook);
+		
+		//set movement status for king and rook
+		rook.setRookHasMoved();
+		king.setKingHasMoved();
+		
+		return originalPlacements3;
 	}
 	
 	public void undoCastlingMove(Piece[] originalPlacements, Move move) {
+		King king = (King) originalPlacements[0];
+		Rook rook = (Rook) originalPlacements[1];
+		rook.setRookHasNotMoved();
+		king.setKingHasNotMoved();
 		
+		getTile(king.getPieceCoordinate()).setPiece(null);
+		getTile(rook.getPieceCoordinate()).setPiece(null);
+		
+		king.setPieceCoordinate(move.getSourceTile().getCoordinate());
+		rook.setPieceCoordinate(move.getDestinationTile().getCoordinate());	
 	}
 	
+	/**
+	 * Checks if the current move is a castling move
+	 * @param move the current move
+	 * @return true if the move is a castling move, false otherwise
+	 */
 	public boolean isCastlingMove(Move move) {
-		return false;
+		King king;
+		Rook rook;
+		
+		if(move.getSourceTile().getPiece() instanceof King && 
+		   move.getDestinationTile().getPiece() instanceof Rook) {
+			
+			king = (King) move.getSourceTile().getPiece();
+			rook = (Rook) move.getDestinationTile().getPiece();
+			
+			return (king.getPieceColor() == currentPlayerColor) &&
+				   (rook.getPieceColor() == currentPlayerColor) &&
+				   (!(king.hasMoved()) && !(rook.hasMoved()));
+		}
+
+		return false;		
 	}
 	
 	public Piece[] executeEnPassantMove(Move move, Pawn enemyPawn) {
@@ -478,7 +585,7 @@ public class Board extends JPanel{
 	public boolean isValidMove(Move move) {
 		Tile sourceTile = move.getSourceTile();
 		Tile destinationTile = move.getDestinationTile();
-		Piece piece = sourceTile.getPiece();		
+		Piece piece = sourceTile.getPiece();
 		Coordinate[] validMoves = piece.generateMoves(tiles, turnNumber);
 		
 		//check all generated moves, if coordinates of any match coordinates of destination tile then
@@ -563,6 +670,7 @@ public class Board extends JPanel{
 		}
 		
 		else if(isCastlingMove(move)) {
+			System.out.println("attempted castling");
 			return executeCastlingMove(move);
 		}
 		
@@ -573,7 +681,7 @@ public class Board extends JPanel{
 	}
 	
 	//sets icons on board for move
-	public void commitMove() {
+	public void displayMove() {
 		for(int r = 0; r < tiles[0].length; r++) {
 			for(int c = 0; c < tiles.length; c++) {
 				tiles[r][c].displayPiece();
@@ -592,7 +700,7 @@ public class Board extends JPanel{
 	 * is also checkmate. if it is checkmate, end the game. otherwise check if the move to be performed is valid.
 	 * if it is, try to execute the move, otherwise clear the move and try again.
 	 * after executing the move, check if this move put the player in check, if it did then undo the move and clear the
-	 * move to try again. if it did not, then commit the move by updating the pieces icons on the board and switch turns
+	 * move to try again. if it did not, then display the move by updating the pieces icons on the board and switch turns
 	 */
 	public void tryMove() {
 		if(isValidMove(currentMove)) {
@@ -600,6 +708,13 @@ public class Board extends JPanel{
 			int row = piece.getPieceCoordinate().getRow();
 			Piece[] originalPlacements;
 			originalPlacements = executeMove(currentMove);
+			
+			//placements will be null is castling attempt failed, try another move
+			if(originalPlacements == null) {
+				currentMove.clearMove();
+				return;
+			}
+			
 			checkForCheck(currentPlayerColor);
 			
 			//if this move put this player in check, undo and try another move
@@ -607,13 +722,21 @@ public class Board extends JPanel{
 				undoMove(originalPlacements, currentMove);
 			}
 			
-			//player was not put in check by move, commit move
+			//player was not put in check by move, display the move
 			else {
-				commitMove();
+				displayMove();
 				
 				//set enpassant status if this piece is a pawn
 				if(piece instanceof Pawn) {
 					((Pawn) piece).setEnPassant(row, turnNumber);
+				}
+				
+				else if(piece instanceof Rook) {
+					((Rook) piece).setRookHasMoved();
+				}
+				
+				else if(piece instanceof King) {
+					((King) piece).setKingHasMoved();
 				}
 				
 				//check if a pawn can be promoted
@@ -625,6 +748,11 @@ public class Board extends JPanel{
 				
 				if(playerInCheck != null) {
 					actionText.append(playerInCheck + " player is in check\n");
+					setKingCheckStatus(playerInCheck, true);
+				}
+				
+				else {
+					setKingCheckStatus(playerInCheck, false);
 				}
 				
 				if(playerInCheck == currentPlayerColor) {
@@ -657,14 +785,6 @@ public class Board extends JPanel{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			for(Piece p : blackPieces) {
-				System.out.println("Black: " + p);
-			}
-			
-			for(Piece p : whitePieces) {
-				System.out.println("White: " + p);
-			}
-			
 			Tile clickedTile = (Tile) e.getSource();
 			Piece clickedPiece = clickedTile.getPiece();
 			
@@ -678,13 +798,9 @@ public class Board extends JPanel{
 			}
 			
 			else if(!(currentMove.destinationSelected())) {
-				//if clicked tile is empty or
-				//if clicked tile does not have a piece of the same color as the player taking their turn
-				if(clickedPiece == null || clickedPiece.getPieceColor() != currentPlayerColor) {
-					currentMove.setDestination(clickedTile);
-					System.out.println("DESTINATION SET!");
-					tryMove();
-				}
+				currentMove.setDestination(clickedTile);
+				System.out.println("DESTINATION SET!");
+				tryMove();
 			}
 		}
 		
