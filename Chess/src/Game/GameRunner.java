@@ -31,8 +31,6 @@ public class GameRunner{
 	 * @param chessGame GameFrame containing the chess game
 	 */
 	public static void setUpGameFrame(GameFrame chessGame) {
-		chessGame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		chessGame.setSize(700, 700);
 		chessGame.setVisible(true);
 	}
 	

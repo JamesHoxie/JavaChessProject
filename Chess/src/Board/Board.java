@@ -1,5 +1,8 @@
 package Board;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.TextArea;
 import java.awt.event.ActionEvent;
@@ -27,13 +30,15 @@ public class Board extends JPanel{
 	private Tile[][] tiles;
 	private Move currentMove;
 	private ChessColor currentPlayerColor;
-	private ChessColor playerInCheckMate = null;
-	private ChessColor playerInCheck = null;
+	private ChessColor playerInCheckMate;
+	private ChessColor playerInCheck;
 	private King blackKing, whiteKing;
 	private ArrayList<Piece> whitePieces = new ArrayList<Piece>();
 	private ArrayList<Piece> blackPieces = new ArrayList<Piece>();
+	private Piece capturedPiece;
 	private TextArea actionText;
-
+	private PieceBox pieceBox;
+	
 	//function sets up pieces on board for start of game
 	void setUpPieces() {
 		//Set up white pieces
@@ -156,13 +161,14 @@ public class Board extends JPanel{
 	}
 	
 	//class constructor, takes x and y size and assigns, also fills tiles array with empty tiles and sets up pieces on the board
-	public Board(int xSize, int ySize, TextArea actionText) {
+	public Board(int xSize, int ySize, TextArea actionText, PieceBox pieceBox) {
 		setLayout(new GridLayout(8, 8));
 		this.xSize = xSize;
 		this.ySize = ySize;
 		this.tiles = new Tile[xSize][ySize];
 		this.currentMove = new Move();
 		this.currentPlayerColor = ChessColor.WHITE;
+		this.pieceBox = pieceBox;
 		setUpTiles();
 		setUpPieces();
 		this.actionText = actionText;
@@ -655,6 +661,8 @@ public class Board extends JPanel{
 			else {
 				whitePieces.remove(destPiece);
 			}
+			
+			capturedPiece = destPiece;
 		}
 		
 		return orignalPlacements;
@@ -688,11 +696,10 @@ public class Board extends JPanel{
 			}
 		}
 		
-//		Tile sourceTile = currentMove.getSourceTile();
-//		Tile destinationTile = currentMove.getDestinationTile();
-//
-//		sourceTile.displayPiece();
-//		destinationTile.displayPiece();
+		if(capturedPiece != null) {
+			pieceBox.capturePiece(capturedPiece);
+			capturedPiece = null;
+		}
 	}
 	
 	/**
