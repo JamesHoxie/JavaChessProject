@@ -24,12 +24,10 @@ public class PieceBox extends JPanel {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		capturedWhitePieces = new JPanel();
 		capturedBlackPieces = new JPanel();
-		capturedWhitePieces.setBackground(Color.RED);
-		capturedBlackPieces.setBackground(Color.BLUE);
+		capturedWhitePieces.setBackground(Color.DARK_GRAY);
+		capturedBlackPieces.setBackground(Color.lightGray);
 		capturedWhitePieces.setOpaque(true);
 		capturedBlackPieces.setOpaque(true);
-		capturedWhitePieces.setPreferredSize(new Dimension(400, 400));
-		capturedBlackPieces.setPreferredSize(new Dimension(400, 400));
 		
 //		JButton cap = new JButton();
 //		cap.setPreferredSize(new Dimension(200, 200));
@@ -49,6 +47,11 @@ public class PieceBox extends JPanel {
 		add(capturedWhitePieces);
 		add(capturedBlackPieces);
 		
+	}
+	
+	public void clear() {
+		capturedWhitePieces.removeAll();
+		capturedBlackPieces.removeAll();
 	}
 	
 	public void capturePiece(Piece piece) {

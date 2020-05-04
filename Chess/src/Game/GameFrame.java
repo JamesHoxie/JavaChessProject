@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import Board.Board;
+import Board.MenuBox;
 import Board.PieceBox;
 import Pieces.Pawn;
 
@@ -27,10 +28,10 @@ import Pieces.Pawn;
 public class GameFrame extends JFrame {
 	JLabel titleBox = new JLabel("This textbox could be used for a title", JLabel.CENTER);
 	//TODO: make menuBox a new class with a menu and buttons (extend jpanel)
-	JPanel menuBox = new JPanel();
+	MenuBox menuBox = new MenuBox();
 	PieceBox pieceBox = new PieceBox();
 	TextArea actionText = new TextArea("", 5, 100);
-	Board gameBoard = new Board(8, 8, actionText, pieceBox);
+	Board gameBoard = new Board(8, 8, actionText, pieceBox, menuBox);
 	JButton saveGameButton = new JButton("Save");
 	/**
 	 * Class Constructor
@@ -42,9 +43,9 @@ public class GameFrame extends JFrame {
 		//setters for GameFrame
 		setBackground(backgroundColor);
 		setLayout(new BorderLayout());
-		setMinimumSize(new Dimension(1300, 1000));
-		setMaximumSize(new Dimension(1300, 1000));
-		this.setResizable(false);
+		setMinimumSize(new Dimension(1500, 1100));
+		setMaximumSize(new Dimension(1500, 1100));
+		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		//setters for gameBoard
@@ -60,7 +61,7 @@ public class GameFrame extends JFrame {
 		actionText.setEditable(false);
 		
 		//setters for pieceBox
-		pieceBox.setPreferredSize(new Dimension(400, 400));
+		pieceBox.setPreferredSize(new Dimension(300, 400));
 		pieceBox.setOpaque(true);
 		pieceBox.setBackground(backgroundColor);
 		
@@ -68,8 +69,6 @@ public class GameFrame extends JFrame {
 		//setters for menuBox
 		menuBox.setOpaque(true);
 		menuBox.setBackground(backgroundColor);
-		menuBox.add(saveGameButton);
-		menuBox.add(new JButton("blahblahblah"));
 		
 		
 		//add components

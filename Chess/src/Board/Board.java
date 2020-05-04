@@ -38,6 +38,7 @@ public class Board extends JPanel{
 	private Piece capturedPiece;
 	private TextArea actionText;
 	private PieceBox pieceBox;
+	private MenuBox menuBox;
 	
 	//function sets up pieces on board for start of game
 	void setUpPieces() {
@@ -161,7 +162,7 @@ public class Board extends JPanel{
 	}
 	
 	//class constructor, takes x and y size and assigns, also fills tiles array with empty tiles and sets up pieces on the board
-	public Board(int xSize, int ySize, TextArea actionText, PieceBox pieceBox) {
+	public Board(int xSize, int ySize, TextArea actionText, PieceBox pieceBox, MenuBox menuBox) {
 		setLayout(new GridLayout(8, 8));
 		this.xSize = xSize;
 		this.ySize = ySize;
@@ -169,6 +170,8 @@ public class Board extends JPanel{
 		this.currentMove = new Move();
 		this.currentPlayerColor = ChessColor.WHITE;
 		this.pieceBox = pieceBox;
+		this.menuBox = menuBox;
+		menuBox.addButtonFunctions(new saveHandler(), new loadHandler(), new resetHandler(), new exitHandler());
 		setUpTiles();
 		setUpPieces();
 		this.actionText = actionText;
@@ -812,4 +815,75 @@ public class Board extends JPanel{
 		}
 		
 	}
+	
+	private class saveHandler implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			
+			
+		}
+		
+	}
+	
+	private class loadHandler implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
+	private class resetHandler implements ActionListener {
+		
+		private void clearPieces() {
+			whitePieces.clear();
+			blackPieces.clear();
+			turnNumber = 1;
+			currentMove.clearMove();
+			currentPlayerColor = ChessColor.WHITE;
+			playerInCheckMate = null;
+			playerInCheck = null;
+			capturedPiece = null;
+			actionText.append("Game Reset...\n");
+			actionText.append("Turn 1\nWHITE player's turn...\n");
+			pieceBox.clear();
+		}
+		
+		private void clearBoard() {
+			for(int r = 0; r < tiles.length; r++) {
+				for(int c = 0; c < tiles[r].length; c++) {
+					tiles[r][c].setPiece(null);
+					tiles[r][c].displayPiece();
+				}
+			}
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			int choice = JOptionPane.showOptionDialog(null, "Are you sure you want to reset the game?", "Reset Game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+			
+			if(choice == 0) {
+				clearPieces();
+				clearBoard();
+				setUpPieces();
+			}			
+		}
+	}
+	
+	private class exitHandler implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {		
+			int choice = JOptionPane.showOptionDialog(null, "Are you sure you want to quit?", "End Game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+			
+			if(choice == 0) {
+				System.exit(0);
+			}
+		}
+	}
 }
+
+

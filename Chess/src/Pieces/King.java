@@ -179,6 +179,7 @@ public class King extends Piece {
 		
 		//check for castling moves
 		if(!hasMoved && !isInCheck) {
+			boolean allSpacesEmptyBetween = true;
 			Rook rook;
 			
 			for(int i = 0; i < tiles[srcRow].length; i++) {
@@ -186,26 +187,38 @@ public class King extends Piece {
 					rook = (Rook) tiles[srcRow][i].getPiece();
 					
 					//check that all spaces in between rook and king are empty
+					//king side castle
 					if(!(rook.hasMoved()) && rook.getPieceColor() == getPieceColor()) {
 						if(srcCol < rook.getPieceCoordinate().getCol()) {
 							for(int j = srcCol + 1; j < rook.getPieceCoordinate().getCol(); j++) {
 								if(!(tiles[srcRow][j].isEmpty())) {
+									allSpacesEmptyBetween = false;
 									break;
 								}
 							}
 							
-							moves.add(new Coordinate(srcRow, rook.getPieceCoordinate().getCol()));
+							if(allSpacesEmptyBetween) {
+								moves.add(new Coordinate(srcRow, rook.getPieceCoordinate().getCol()));
+							}
+							
+							allSpacesEmptyBetween = true;						
 						}
 						
 						//srcCol > rook.getPieceCoordinate().getCol()
+						//queen side castle
 						else {
-							for(int j = srcCol - 1; j < rook.getPieceCoordinate().getCol() + 1; j--) {
+							for(int j = srcCol - 1; j > rook.getPieceCoordinate().getCol() + 1; j--) {
 								if(!(tiles[srcRow][j].isEmpty())) {
+									allSpacesEmptyBetween = false;
 									break;
 								}
 							}
 							
-							moves.add(new Coordinate(srcRow, rook.getPieceCoordinate().getCol()));
+							if(allSpacesEmptyBetween) {
+								moves.add(new Coordinate(srcRow, rook.getPieceCoordinate().getCol()));
+							}
+							
+							allSpacesEmptyBetween = true;	
 						}
 					}
 				}
