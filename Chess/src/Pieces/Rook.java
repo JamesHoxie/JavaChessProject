@@ -155,4 +155,10 @@ public class Rook extends Piece {
 	public Coordinate[] generateMoves(Tile[][] tiles, int turnNumber) {
 		return generateRookMoves(tiles, this);
 	}
+	
+	//add state to string for rook
+	@Override
+	public String toString() {
+		return super.toString() + "," + hasMoved;
+	}
 }

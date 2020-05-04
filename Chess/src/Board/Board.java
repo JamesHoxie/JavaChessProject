@@ -7,8 +7,15 @@ import java.awt.GridLayout;
 import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -39,14 +46,14 @@ public class Board extends JPanel{
 	private TextArea actionText;
 	private PieceBox pieceBox;
 	private MenuBox menuBox;
-	
+
 	//function sets up pieces on board for start of game
 	void setUpPieces() {
 		//Set up white pieces
 		whiteKing = new King(new Coordinate(7, 4), ChessColor.WHITE);
 		Piece whiteKnight1, whiteKnight2, whiteBishop1, whiteBishop2, whiteRook1, whiteRook2, 
 		whiteQueen, whitePawn; 
-		
+
 		whiteKnight1 = new Knight(new Coordinate(7, 1), ChessColor.WHITE);
 		whiteKnight2 = new Knight(new Coordinate(7, 6), ChessColor.WHITE);
 		whiteBishop1 = new Bishop(new Coordinate(7, 2), ChessColor.WHITE);
@@ -54,7 +61,7 @@ public class Board extends JPanel{
 		whiteRook1 = new Rook(new Coordinate(7, 0), ChessColor.WHITE);
 		whiteRook2 = new Rook(new Coordinate(7, 7), ChessColor.WHITE);
 		whiteQueen = new Queen(new Coordinate(7, 3), ChessColor.WHITE);
-		
+
 		whitePieces.add(whiteKing);
 		whitePieces.add(whiteKnight1);
 		whitePieces.add(whiteKnight2);
@@ -63,7 +70,7 @@ public class Board extends JPanel{
 		whitePieces.add(whiteRook1);
 		whitePieces.add(whiteRook2);
 		whitePieces.add(whiteQueen);
-		
+
 		tiles[7][0].setPiece(whiteRook1);
 		tiles[7][1].setPiece(whiteKnight1);
 		tiles[7][2].setPiece(whiteBishop1);
@@ -72,24 +79,24 @@ public class Board extends JPanel{
 		tiles[7][5].setPiece(whiteBishop2);
 		tiles[7][6].setPiece(whiteKnight2);
 		tiles[7][7].setPiece(whiteRook2);
-		
+
 		for(int i = 0; i < tiles[7].length; i++) {
 			tiles[7][i].displayPiece();
 		}
-		
-		
+
+
 		for(int i = 0; i < tiles[6].length; i++) {
 			whitePawn = new Pawn(new Coordinate(6, i), ChessColor.WHITE);
 			whitePieces.add(whitePawn);
 			tiles[6][i].setPiece(whitePawn);
 			tiles[6][i].displayPiece();
 		}
-		
+
 		//Set up black pieces
 		blackKing = new King(new Coordinate(0, 4), ChessColor.BLACK);
 		Piece blackKnight1, blackKnight2, blackBishop1, blackBishop2, blackRook1, blackRook2, 
 		blackQueen, blackPawn;
-		
+
 		blackKnight1 = new Knight(new Coordinate(0, 1), ChessColor.BLACK);
 		blackKnight2 = new Knight(new Coordinate(0, 6), ChessColor.BLACK);
 		blackBishop1 = new Bishop(new Coordinate(0, 2), ChessColor.BLACK);
@@ -97,7 +104,7 @@ public class Board extends JPanel{
 		blackRook1 = new Rook(new Coordinate(0, 0), ChessColor.BLACK);
 		blackRook2 = new Rook(new Coordinate(0, 7), ChessColor.BLACK);
 		blackQueen = new Queen(new Coordinate(0, 3), ChessColor.BLACK);
-		
+
 		blackPieces.add(blackKing);
 		blackPieces.add(blackKnight1);
 		blackPieces.add(blackKnight2);
@@ -106,7 +113,7 @@ public class Board extends JPanel{
 		blackPieces.add(blackRook1);
 		blackPieces.add(blackRook2);
 		blackPieces.add(blackQueen);
-		
+
 		tiles[0][0].setPiece(blackRook1);
 		tiles[0][1].setPiece(blackKnight1);
 		tiles[0][2].setPiece(blackBishop1);
@@ -115,11 +122,11 @@ public class Board extends JPanel{
 		tiles[0][5].setPiece(blackBishop2);
 		tiles[0][6].setPiece(blackKnight2);
 		tiles[0][7].setPiece(blackRook2);
-		
+
 		for(int i = 0; i < tiles[0].length; i++) {
 			tiles[0][i].displayPiece();
 		}
-		
+
 		for(int i = 0; i < tiles[1].length; i++) {
 			blackPawn = new Pawn(new Coordinate(1, i), ChessColor.BLACK);
 			blackPieces.add(blackPawn);
@@ -127,7 +134,7 @@ public class Board extends JPanel{
 			tiles[1][i].displayPiece();
 		}
 	}
-	
+
 	//function fills tiles array and fills board with JButtons to act as spaces, alternate between black and white tiles
 	void setUpTiles(){
 		boolean setBlack;
@@ -160,7 +167,7 @@ public class Board extends JPanel{
 			setBlack = true;
 		}
 	}
-	
+
 	//class constructor, takes x and y size and assigns, also fills tiles array with empty tiles and sets up pieces on the board
 	public Board(int xSize, int ySize, TextArea actionText, PieceBox pieceBox, MenuBox menuBox) {
 		setLayout(new GridLayout(8, 8));
@@ -178,7 +185,7 @@ public class Board extends JPanel{
 		actionText.append("Turn " + turnNumber + "\n");
 		actionText.append(currentPlayerColor + " player's turn..." + "\n");
 	}
-	
+
 	/**
 	 * sets the check status for the king matching kingColor
 	 * @param kingColor the color of the king being set
@@ -189,23 +196,23 @@ public class Board extends JPanel{
 			if(checkStatus == true) {
 				blackKing.setKingInCheck();
 			}
-			
+
 			else {
 				blackKing.setKingOutOfCheck();
 			}
 		}
-		
+
 		else {
 			if(checkStatus == true) {
 				whiteKing.setKingInCheck();
 			}
-			
+
 			else {
 				whiteKing.setKingOutOfCheck();
 			}
 		}
 	}
-	
+
 	/**
 	 * This function is used to promote a pawn when it reaches the other side of the board
 	 * @param pawnToBePromoted The pawn to be promoted into a piece of promotionType
@@ -214,17 +221,17 @@ public class Board extends JPanel{
 	public void promotePawn(Piece pawnToBePromoted, int promotionType) {
 		ArrayList<Piece> pieces;
 		Piece promotedPawn = null;
-		
+
 		if(currentPlayerColor == ChessColor.BLACK) {
 			pieces = blackPieces;
 		}
-		
+
 		else {
 			pieces = whitePieces;
 		}
-		
+
 		pieces.remove(pawnToBePromoted);
-		
+
 		switch(promotionType) {
 		case 0:
 			promotedPawn = new Queen(pawnToBePromoted.getPieceCoordinate(), currentPlayerColor);
@@ -239,13 +246,13 @@ public class Board extends JPanel{
 			promotedPawn = new Knight(pawnToBePromoted.getPieceCoordinate(), currentPlayerColor);
 			break;
 		}
-		
+
 		pieces.add(promotedPawn);
 		getTile(promotedPawn.getPieceCoordinate()).setPiece(promotedPawn);
 		getTile(promotedPawn.getPieceCoordinate()).displayPiece();
-		
+
 	}
-	
+
 	/**
 	 * This function is used to check if any pawn on the board can be promoted
 	 */
@@ -253,15 +260,15 @@ public class Board extends JPanel{
 		ArrayList<Piece> pieces;
 		Pawn pawnToPromote = null;
 		int selection = -1;
-		
+
 		if(currentPlayerColor == ChessColor.WHITE) {
 			pieces = whitePieces;
 		}
-		
+
 		else {
 			pieces = blackPieces;
 		}
-		
+
 		for(Piece p: pieces) {
 			if(p instanceof Pawn && (p.getPieceCoordinate().getRow() == 0 || p.getPieceCoordinate().getRow() == 7)) {
 				String[] options = {"Queen", "Rook", "Bishop", "Knight"};
@@ -270,17 +277,17 @@ public class Board extends JPanel{
 				break;
 			}
 		}
-		
+
 		if(selection != -1) {
 			promotePawn(pawnToPromote, selection);
 		}
 	}
-	
+
 	//returns color of player in checkmate on this board, or null if neither player is in checkmate
 	public ChessColor getPlayerInCheckMate() {
 		return playerInCheckMate;
 	}
-	
+
 	/**
 	 * Checks if the player matching playerColor is currently in check, updates playerInCheck member variable
 	 * of board accordingly, null if player is not in check
@@ -291,17 +298,17 @@ public class Board extends JPanel{
 		Coordinate[] moves;
 		ArrayList<Piece> opponentPieces;
 		King kingBeingChecked;
-		
+
 		if(playerColor == ChessColor.WHITE) {
 			opponentPieces = blackPieces;
 			kingBeingChecked = whiteKing;
 		}
-		
+
 		else {
 			opponentPieces = whitePieces;
 			kingBeingChecked = blackKing;
 		}
-		
+
 		//generate all coordinates opponent can threaten
 		for(Piece piece : opponentPieces) {
 			if(piece instanceof Pawn) {
@@ -319,19 +326,19 @@ public class Board extends JPanel{
 				}
 			}
 		}
-		
+
 		if(threatenedCoordinates.contains(kingBeingChecked.getPieceCoordinate())) {
 			playerInCheck = playerColor;
 			System.out.println(currentPlayerColor + "player is in check");
 		}
-		
+
 		else {
 			playerInCheck = null;
 			System.out.println(currentPlayerColor + " player is not in check");
 		}
-		
+
 	}
-		
+
 	/**
 	 * Checks if the player matching playerColor is currently in checkmate, updates playerInCheckMate member variable
 	 * of board accordingly, null if player is not in checkmate, necessary assumption for this function being called:
@@ -344,19 +351,19 @@ public class Board extends JPanel{
 		ArrayList<Piece> friendlyPieces;
 		Tile sourceTile, destinationTile;
 		Piece[] originalPlacements;
-		
+
 		if(playerColor == ChessColor.WHITE) {
 			friendlyPieces = whitePieces;
 		}
-		
+
 		else {
 			friendlyPieces = blackPieces;
 		}
-		
+
 		for(Piece piece : friendlyPieces) {
-			
+
 			System.out.println(piece);
-			
+
 			moves = piece.generateMoves(tiles, turnNumber);
 
 			for(Coordinate c: moves) {
@@ -364,11 +371,11 @@ public class Board extends JPanel{
 				destinationTile = getTile(c);
 				nextPossibleMove.setSource(sourceTile);
 				nextPossibleMove.setDestination(destinationTile);
-				
+
 				if(isValidMove(nextPossibleMove) && !(isCastlingMove(nextPossibleMove))) {
 					originalPlacements = executeMove(nextPossibleMove);
 					checkForCheck(playerColor);
-					
+
 					if(playerInCheck != playerColor) {
 						System.out.println("No player is in checkmate");
 						playerInCheckMate = null;
@@ -378,28 +385,28 @@ public class Board extends JPanel{
 						nextPossibleMove.clearMove();
 						return;
 					}
-					
+
 					undoMove(originalPlacements, nextPossibleMove);
 					nextPossibleMove.clearMove();
 				}
 			}
 		}
-		
+
 		System.out.println(playerColor + " player is in checkmate");
 		playerInCheckMate = playerColor;
 	}
-	
+
 	//switches color of current player taking their turn
 	public void switchCurrentPlayerColor() {
 		if(this.currentPlayerColor == ChessColor.BLACK) {
 			this.currentPlayerColor = ChessColor.WHITE;
 		}
-		
+
 		else {
 			this.currentPlayerColor = ChessColor.BLACK;
 		}
 	}
-	
+
 	//returns the color of the player currently taking their turn
 	public ChessColor getCurrentPlayerColor() {
 		return this.currentPlayerColor;
@@ -409,7 +416,7 @@ public class Board extends JPanel{
 	public Tile getTile(Coordinate coordinate) {
 		return tiles[coordinate.getRow()][coordinate.getCol()];
 	}
-	
+
 	public Piece[] executeCastlingMove(Move move) {
 		King king = (King) move.getSourceTile().getPiece();
 		Rook rook = (Rook) move.getDestinationTile().getPiece();
@@ -419,34 +426,34 @@ public class Board extends JPanel{
 		int rookCol = rook.getPieceCoordinate().getCol();
 		Piece[] originalPlacements, originalPlacements2, originalPlacements3 = {king, rook};
 		Move intermediateMove = new Move(), intermediateMove2 = new Move();
-		
+
 		//queen side castle
 		if(rookCol < kingCol) {
 			kingCol2 = kingCol - 1;
 			kingCol3 = kingCol - 2;		
 		}
-		
+
 		//king side castle
 		else {
 			kingCol2 = kingCol + 1;
 			kingCol3 = kingCol + 2;
 		}
-		
+
 		intermediateMove.setSource(move.getSourceTile());
 		intermediateMove.setDestination(tiles[row][kingCol2]);
 		originalPlacements = executeStandardMove(intermediateMove);
-		
+
 		checkForCheck(currentPlayerColor);
 		//if this move put this player in check, undo and stop castling
 		if(playerInCheck == currentPlayerColor) {
 			undoMove(originalPlacements, intermediateMove);
 			return null;
 		}
-		
+
 		intermediateMove2.setSource(intermediateMove.getDestinationTile());
 		intermediateMove2.setDestination(tiles[row][kingCol3]);
 		originalPlacements2 = executeStandardMove(intermediateMove2);
-			
+
 		checkForCheck(currentPlayerColor);
 		//if this move put this player in check, undo and stop castling
 		if(playerInCheck == currentPlayerColor) {
@@ -454,34 +461,34 @@ public class Board extends JPanel{
 			undoMove(originalPlacements, intermediateMove);
 			return null;
 		}		
-		
+
 		king.setPieceCoordinate(tiles[row][kingCol3].getCoordinate());
 		move.getSourceTile().setPiece(null);
 		rook.setPieceCoordinate(tiles[row][kingCol2].getCoordinate());
 		move.getDestinationTile().setPiece(null);
-		
+
 		getTile(rook.getPieceCoordinate()).setPiece(rook);
-		
+
 		//set movement status for king and rook
 		rook.setRookHasMoved();
 		king.setKingHasMoved();
-		
+
 		return originalPlacements3;
 	}
-	
+
 	public void undoCastlingMove(Piece[] originalPlacements, Move move) {
 		King king = (King) originalPlacements[0];
 		Rook rook = (Rook) originalPlacements[1];
 		rook.setRookHasNotMoved();
 		king.setKingHasNotMoved();
-		
+
 		getTile(king.getPieceCoordinate()).setPiece(null);
 		getTile(rook.getPieceCoordinate()).setPiece(null);
-		
+
 		king.setPieceCoordinate(move.getSourceTile().getCoordinate());
 		rook.setPieceCoordinate(move.getDestinationTile().getCoordinate());	
 	}
-	
+
 	/**
 	 * Checks if the current move is a castling move
 	 * @param move the current move
@@ -490,60 +497,62 @@ public class Board extends JPanel{
 	public boolean isCastlingMove(Move move) {
 		King king;
 		Rook rook;
-		
+
 		if(move.getSourceTile().getPiece() instanceof King && 
-		   move.getDestinationTile().getPiece() instanceof Rook) {
-			
+				move.getDestinationTile().getPiece() instanceof Rook) {
+
 			king = (King) move.getSourceTile().getPiece();
 			rook = (Rook) move.getDestinationTile().getPiece();
-			
+
 			return (king.getPieceColor() == currentPlayerColor) &&
-				   (rook.getPieceColor() == currentPlayerColor) &&
-				   (!(king.hasMoved()) && !(rook.hasMoved()));
+					(rook.getPieceColor() == currentPlayerColor) &&
+					(!(king.hasMoved()) && !(rook.hasMoved()));
 		}
 
 		return false;		
 	}
-	
+
 	public Piece[] executeEnPassantMove(Move move, Pawn enemyPawn) {
 		Piece[] originalPlacements = executeStandardMove(move);
 		originalPlacements[1] = enemyPawn;
-		
+
 		getTile(enemyPawn.getPieceCoordinate()).setPiece(null);
-		
+
 		if(enemyPawn.getPieceColor() == ChessColor.BLACK) {
 			blackPieces.remove(enemyPawn);
 		}
-		
+
 		else {
 			whitePieces.remove(enemyPawn);
 		}
-		
+
+		capturedPiece = enemyPawn;
+
 		return originalPlacements;
 	}
-	
+
 	public void undoEnPassantMove(Piece[] originalPlacements, Move move) {
 		Tile sourceTile = move.getSourceTile();
 		Tile destinationTile = move.getDestinationTile();
 		Piece sourcePiece = originalPlacements[0];
 		Piece enemyPawn = originalPlacements[1];
-		
+
 		sourcePiece.setPieceCoordinate(sourceTile.getCoordinate());
 		sourceTile.setPiece(sourcePiece);
 		destinationTile.setPiece(null);
 		getTile(enemyPawn.getPieceCoordinate()).setPiece(enemyPawn);
-		
+
 		if(enemyPawn != null) {
 			if(enemyPawn.getPieceColor() == ChessColor.BLACK) {
 				blackPieces.add(enemyPawn);
 			}
-			
+
 			else {
 				whitePieces.add(enemyPawn);
 			}
 		}
 	}
-	
+
 	/**
 	 * determines if this move is an enpassant move
 	 * @param move the move being checked 
@@ -554,49 +563,49 @@ public class Board extends JPanel{
 		Piece piece = sourceTile.getPiece();
 		int enemyCol1 = -1, enemyCol2 = -1;
 		Coordinate enemyCoordinate1 = null, enemyCoordinate2 = null;
-		
+
 		if(piece != null) {
 			enemyCol1 = piece.getPieceCoordinate().getCol() - 1;
 			enemyCol2 = piece.getPieceCoordinate().getCol() + 1;
 			enemyCoordinate1 = new Coordinate(piece.getPieceCoordinate().getRow(), enemyCol1);
 			enemyCoordinate2 = new Coordinate(piece.getPieceCoordinate().getRow(), enemyCol2);
 		}
-		
+
 		Piece enemyPiece1 = null;
 		Piece enemyPiece2 = null;
-		
+
 		if(Coordinate.isValidCoordinate(enemyCoordinate1, xSize, ySize)) {
 			enemyPiece1 = getTile(enemyCoordinate1).getPiece();
 		}
-		
+
 		if(Coordinate.isValidCoordinate(enemyCoordinate2, xSize, ySize)) {
 			enemyPiece2 = getTile(enemyCoordinate2).getPiece();
 		}
-		
+
 		if(piece instanceof Pawn &&
-		  (enemyPiece1 instanceof Pawn &&
-		  ((Pawn) enemyPiece1).canBeCapturedEnPassant(turnNumber))) {
-			
+				(enemyPiece1 instanceof Pawn &&
+						((Pawn) enemyPiece1).canBeCapturedEnPassant(turnNumber))) {
+
 			return (Pawn) enemyPiece1;
 		}
-		
+
 		if(piece instanceof Pawn &&
-		  (enemyPiece2 instanceof Pawn &&
-		  ((Pawn) enemyPiece2).canBeCapturedEnPassant(turnNumber))) {
-		  
+				(enemyPiece2 instanceof Pawn &&
+						((Pawn) enemyPiece2).canBeCapturedEnPassant(turnNumber))) {
+
 			return (Pawn) enemyPiece2;
 		}	
-		
+
 		return null;
 	}
-	
+
 	//checks if current move is valid
 	public boolean isValidMove(Move move) {
 		Tile sourceTile = move.getSourceTile();
 		Tile destinationTile = move.getDestinationTile();
 		Piece piece = sourceTile.getPiece();
 		Coordinate[] validMoves = piece.generateMoves(tiles, turnNumber);
-		
+
 		//check all generated moves, if coordinates of any match coordinates of destination tile then
 		//move is valid
 		for(Coordinate c: validMoves) {
@@ -604,47 +613,47 @@ public class Board extends JPanel{
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public void undoStandardMove(Piece[] originalPlacements, Move move) {
 		Tile sourceTile = move.getSourceTile();
 		Tile destinationTile = move.getDestinationTile();
 		Piece sourcePiece = originalPlacements[0];
 		Piece destPiece = originalPlacements[1];
-		
+
 		sourcePiece.setPieceCoordinate(sourceTile.getCoordinate());
 		sourceTile.setPiece(sourcePiece);
 		destinationTile.setPiece(destPiece);
-		
+
 		if(destPiece != null) {
 			if(destPiece.getPieceColor() == ChessColor.BLACK) {
 				blackPieces.add(destPiece);
 			}
-			
+
 			else {
 				whitePieces.add(destPiece);
 			}
 		}
 	}
-	
+
 	//used to undo the last move taken in the event of a move putting a player into check or keeping them in check
 	public void undoMove(Piece[] originalPlacements, Move move) {
 		Pawn enemyPawn = isEnPassantMove(move);
 		if(enemyPawn != null) {
 			undoEnPassantMove(originalPlacements, move);
 		}
-		
+
 		else if(isCastlingMove(move)) {
 			undoCastlingMove(originalPlacements, move);
 		}
-		
+
 		else {
 			undoStandardMove(originalPlacements, move);
 		}
 	}
-	
+
 	public Piece[] executeStandardMove(Move move) {
 		Tile sourceTile = move.getSourceTile();
 		Tile destinationTile = move.getDestinationTile();
@@ -655,42 +664,42 @@ public class Board extends JPanel{
 		sourcePiece.setPieceCoordinate(destinationTile.getCoordinate());
 		sourceTile.setPiece(null);
 		destinationTile.setPiece(sourcePiece);
-		
+
 		if(destPiece != null) {
 			if(destPiece.getPieceColor() == ChessColor.BLACK) {
 				blackPieces.remove(destPiece);
 			}
-			
+
 			else {
 				whitePieces.remove(destPiece);
 			}
-			
+
 			capturedPiece = destPiece;
 		}
-		
+
 		return orignalPlacements;
 	}
-	
+
 	//determine type of move to execute (enpassant, castling, or a standard move)
 	//moves piece from source tile to destination for the current move, does not adjust icons
 	public Piece[] executeMove(Move move) {
 		Pawn enemyPawn = isEnPassantMove(move);
-		
+
 		if(enemyPawn != null) {
 			return executeEnPassantMove(move, enemyPawn);
 		}
-		
+
 		else if(isCastlingMove(move)) {
 			System.out.println("attempted castling");
 			return executeCastlingMove(move);
 		}
-		
+
 		//move is not a special move
 		else {
 			return executeStandardMove(move);
 		}
 	}
-	
+
 	//sets icons on board for move
 	public void displayMove() {
 		for(int r = 0; r < tiles[0].length; r++) {
@@ -698,13 +707,13 @@ public class Board extends JPanel{
 				tiles[r][c].displayPiece();
 			}
 		}
-		
+
 		if(capturedPiece != null) {
 			pieceBox.capturePiece(capturedPiece);
 			capturedPiece = null;
 		}
 	}
-	
+
 	/**
 	 * tries to perform this move. first checks for a player in check, if a player is in check then check if that check
 	 * is also checkmate. if it is checkmate, end the game. otherwise check if the move to be performed is valid.
@@ -718,66 +727,66 @@ public class Board extends JPanel{
 			int row = piece.getPieceCoordinate().getRow();
 			Piece[] originalPlacements;
 			originalPlacements = executeMove(currentMove);
-			
+
 			//placements will be null is castling attempt failed, try another move
 			if(originalPlacements == null) {
 				currentMove.clearMove();
 				return;
 			}
-			
+
 			checkForCheck(currentPlayerColor);
-			
+
 			//if this move put this player in check, undo and try another move
 			if(playerInCheck == currentPlayerColor) {
 				undoMove(originalPlacements, currentMove);
 			}
-			
+
 			//player was not put in check by move, display the move
 			else {
 				displayMove();
-				
+
 				//set enpassant status if this piece is a pawn
 				if(piece instanceof Pawn) {
 					((Pawn) piece).setEnPassant(row, turnNumber);
 				}
-				
+
 				else if(piece instanceof Rook) {
 					((Rook) piece).setRookHasMoved();
 				}
-				
+
 				else if(piece instanceof King) {
 					((King) piece).setKingHasMoved();
 				}
-				
+
 				//check if a pawn can be promoted
 				checkForPawnPromotion();
-				
+
 				switchCurrentPlayerColor();
 				//check if other player was put into check from last players move
 				checkForCheck(currentPlayerColor);
-				
+
 				if(playerInCheck != null) {
 					actionText.append(playerInCheck + " player is in check\n");
 					setKingCheckStatus(playerInCheck, true);
 				}
-				
+
 				else {
 					setKingCheckStatus(playerInCheck, false);
 				}
-				
+
 				if(playerInCheck == currentPlayerColor) {
 					//check if other player was put into checkmate from last players move
 					checkForCheckMate(currentPlayerColor);
-					
+
 					if(playerInCheckMate == currentPlayerColor) {
 						actionText.append("GAME SET! \n" + playerInCheckMate + " player is in checkmate!");
 						JOptionPane.showMessageDialog(null, "GAME SET! \n" + playerInCheckMate + " player is in checkmate!");
 						//TODO: game is over, adjust shut down procedures
 						System.exit(0);
 					}
-					
+
 				}
-				
+
 				turnNumber++;
 				actionText.append("Turn " + turnNumber + "\n");
 				actionText.append(currentPlayerColor + " player's turn..." + "\n");
@@ -785,11 +794,34 @@ public class Board extends JPanel{
 
 		}
 
-		
-		
+
+
 		currentMove.clearMove();
 	}
 	
+	private void clearPieces() {
+		whitePieces.clear();
+		blackPieces.clear();
+		turnNumber = 1;
+		currentMove.clearMove();
+		currentPlayerColor = ChessColor.WHITE;
+		playerInCheckMate = null;
+		playerInCheck = null;
+		capturedPiece = null;
+		actionText.append("Game Reset...\n");
+		actionText.append("Turn 1\nWHITE player's turn...\n");
+		pieceBox.clear();
+	}
+	
+	private void clearBoard() {
+		for(int r = 0; r < tiles.length; r++) {
+			for(int c = 0; c < tiles[r].length; c++) {
+				tiles[r][c].setPiece(null);
+				tiles[r][c].displayPiece();
+			}
+		}
+	}
+
 	//Handler class for button clicks to tiles on gameboard
 	private class TileHandler implements ActionListener{
 
@@ -797,7 +829,7 @@ public class Board extends JPanel{
 		public void actionPerformed(ActionEvent e) {
 			Tile clickedTile = (Tile) e.getSource();
 			Piece clickedPiece = clickedTile.getPiece();
-			
+
 			if(!(currentMove.sourceSelected())) {
 				//if clicked tile has a piece and 
 				//if clicked piece matches color of player taking their turn
@@ -806,65 +838,333 @@ public class Board extends JPanel{
 					System.out.println("SOURCE SET!");
 				}
 			}
-			
+
 			else if(!(currentMove.destinationSelected())) {
 				currentMove.setDestination(clickedTile);
 				System.out.println("DESTINATION SET!");
 				tryMove();
 			}
 		}
-		
+
 	}
-	
+
 	private class saveHandler implements ActionListener {
 
 		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			
-			
+		public void actionPerformed(ActionEvent arg0) {	
+			String path = System.getProperty("user.home") + File.separator + "Documents";
+			path += File.separator + "Java_Chess_Save";
+			File saveLocation = new File(path);
+			File saveFile = new File(path + "/SaveFile.txt");
+
+			if (!(saveLocation.exists())) {
+				if(saveLocation.mkdirs()) {
+					System.out.println(saveLocation + " was created");
+				}
+
+				else {
+					System.out.println(saveLocation + " was not created");
+				}
+			}
+
+			try {
+				saveLocation.setWritable(true);
+				saveFile.createNewFile();
+				FileWriter fw = new FileWriter(saveFile);
+
+				fw.write(Integer.toString(turnNumber) + "\n");
+
+				if(playerInCheck != null) {
+					fw.write(playerInCheck+"\n");
+				}
+
+				else {
+					fw.write("null\n");
+				}
+				
+				fw.write(currentPlayerColor+"\n");
+
+				for(int r = 0; r < tiles.length; r++) {
+					for(int c = 0; c < tiles[0].length; c++) {
+						if(tiles[r][c].isEmpty()) {
+							fw.write("null\n");
+						}
+
+						else {
+							fw.write(tiles[r][c].getPiece().toString() + "\n");
+						}
+
+					}
+				}
+				
+				fw.write("Captured-Black-Pieces\n");
+				
+				//Save piecebox
+				for(String pieceType : pieceBox.getCapturedBlackPiecesTypes()) {
+					fw.write(pieceType + "\n");
+				}
+				
+				fw.write("Captured-White-Pieces\n");
+				
+				for(String pieceType : pieceBox.getCapturedWhitePiecesTypes()) {
+					fw.write(pieceType + "\n");
+				}
+				
+				fw.close();
+				System.out.println("save file created");
+				actionText.append("game saved!\n");
+			} catch (IOException e) {
+				//e.printStackTrace();
+				JOptionPane.showMessageDialog(null, "Error saving file");
+			}
+
 		}
-		
+
 	}
-	
+
 	private class loadHandler implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
+			String path = System.getProperty("user.home") + File.separator + "Documents";
+			path += File.separator + "Java_Chess_Save";
+			File saveLocation = new File(path);
+			File saveFile = new File(path + "/SaveFile.txt");
+			String[] pieceInfo;
+			String pieceType;
+			ChessColor pieceColor;
+			Piece nextPiece;
+			int turnNum = -1;
 			
-		}
-		
-	}
-	
-	private class resetHandler implements ActionListener {
-		
-		private void clearPieces() {
-			whitePieces.clear();
-			blackPieces.clear();
-			turnNumber = 1;
-			currentMove.clearMove();
-			currentPlayerColor = ChessColor.WHITE;
-			playerInCheckMate = null;
-			playerInCheck = null;
-			capturedPiece = null;
-			actionText.append("Game Reset...\n");
-			actionText.append("Turn 1\nWHITE player's turn...\n");
-			pieceBox.clear();
-		}
-		
-		private void clearBoard() {
-			for(int r = 0; r < tiles.length; r++) {
-				for(int c = 0; c < tiles[r].length; c++) {
-					tiles[r][c].setPiece(null);
-					tiles[r][c].displayPiece();
+			if(!(saveLocation.exists())) {
+				JOptionPane.showMessageDialog(null, "No save location detected");
+			}
+			
+			else if(!(saveFile.exists())) {
+				JOptionPane.showMessageDialog(null, "No save file detected");
+			}
+			
+			else {
+				clearPieces();
+				clearBoard();
+				
+				try {
+					Scanner sc = new Scanner(saveFile);
+					int lineNum = 1, row = 0, col = 0;
+					String nextLine;
+					
+					while(sc.hasNext()) {
+						nextLine = sc.nextLine();
+						
+						if(lineNum == 1) {
+							turnNumber = Integer.parseInt(nextLine);
+							turnNum = turnNumber;
+						}
+						
+						else if(lineNum == 2) {
+							if(nextLine.equals("BLACK")) {
+								playerInCheck = ChessColor.BLACK;
+							}
+							
+							else if(nextLine.equals("WHITE")) {
+								playerInCheck = ChessColor.WHITE;
+							}
+							
+							else {
+								playerInCheck = null;
+							}
+						}
+						
+						else if(lineNum == 3) {
+							if(nextLine.equals("BLACK")) {
+								currentPlayerColor = ChessColor.BLACK;
+							}
+							
+							else {
+								currentPlayerColor = ChessColor.WHITE;
+							}
+						}
+						
+						else if(nextLine.equals("null")) {
+							nextPiece = null;
+						}
+						
+						else if(nextLine.equals("Captured-Black-Pieces")) {
+							
+							while(sc.hasNext()) {
+								nextLine = sc.nextLine();
+								
+								if(nextLine.equals("Pawn")) {
+									pieceBox.capturePiece(new Pawn(null, ChessColor.BLACK));
+								}
+								
+								else if(nextLine.equals("Knight")) {
+									pieceBox.capturePiece(new Knight(null, ChessColor.BLACK));
+								}
+								
+								else if(nextLine.equals("Bishop")) {
+									pieceBox.capturePiece(new Bishop(null, ChessColor.BLACK));
+								}
+								
+								else if(nextLine.equals("Rook")) {
+									pieceBox.capturePiece(new Rook(null, ChessColor.BLACK));
+								}
+								
+								else if(nextLine.equals("Queen")) {
+									pieceBox.capturePiece(new Queen(null, ChessColor.BLACK));
+								}
+								
+								//nextLine.equals("Captured-White-Pieces")
+								else {
+									lineNum++;
+									break;
+								}
+								
+								lineNum++;
+							}
+							
+							while(sc.hasNext()) {
+								nextLine = sc.nextLine();
+								
+								if(nextLine.equals("Pawn")) {
+									pieceBox.capturePiece(new Pawn(null, ChessColor.WHITE));
+								}
+								
+								else if(nextLine.equals("Knight")) {
+									pieceBox.capturePiece(new Knight(null, ChessColor.WHITE));
+								}
+								
+								else if(nextLine.equals("Bishop")) {
+									pieceBox.capturePiece(new Bishop(null, ChessColor.WHITE));
+								}
+								
+								else if(nextLine.equals("Rook")) {
+									pieceBox.capturePiece(new Rook(null, ChessColor.WHITE));
+								}
+								
+								else if(nextLine.equals("Queen")) {
+									pieceBox.capturePiece(new Queen(null, ChessColor.WHITE));
+								}
+								
+								//nextLine.equals("Captured-White-Pieces")
+								else {
+									break;
+								}
+								
+								lineNum++;
+							}
+												
+						}
+						
+						else {			
+							pieceInfo = nextLine.split(",");
+							pieceType = pieceInfo[0];
+							
+							if(pieceInfo[1].equals("WHITE")) {
+								pieceColor = ChessColor.WHITE;
+							}
+							
+							else {
+								pieceColor = ChessColor.BLACK;
+							}
+							
+							switch(pieceType) {
+								case "Pawn":
+									nextPiece = new Pawn(new Coordinate(row, col), pieceColor);
+									int lastRow = Integer.parseInt(pieceInfo[4]);
+								
+									((Pawn) nextPiece).setLastRow(lastRow);
+									((Pawn) nextPiece).setTurnUsedDoubleMove(Integer.parseInt(pieceInfo[3]));
+									((Pawn) nextPiece).setEnPassant(lastRow, turnNum);								
+									break;
+								case "Knight":
+									nextPiece = new Knight(new Coordinate(row, col), pieceColor);
+									break;
+								case "Bishop":
+									nextPiece = new Bishop(new Coordinate(row, col), pieceColor);
+									break;
+								case "Rook":
+									nextPiece = new Rook(new Coordinate(row, col), pieceColor);
+									
+									if(pieceInfo[2].equals("true")) {
+										((Rook) nextPiece).setRookHasMoved();
+									}
+					
+									break;
+								case "Queen":
+									nextPiece = new Queen(new Coordinate(row, col), pieceColor);
+									break;
+								case "King":
+									nextPiece = new King(new Coordinate(row, col), pieceColor);
+									
+									if(pieceInfo[2].equals("true")) {
+										((King) nextPiece).setKingHasMoved();
+									}
+									
+									if(pieceInfo[3].equals("true")) {
+										((King) nextPiece).setKingInCheck();
+									}
+									
+									break;	
+								default:
+									nextPiece = null;
+							}
+							
+							
+							if(nextPiece != null) {
+								if(nextPiece.getPieceColor() == ChessColor.BLACK) {
+									blackPieces.add(nextPiece);
+								}
+								
+								else {
+									whitePieces.add(nextPiece);
+								}
+							}
+							
+							tiles[row][col].setPiece(nextPiece);
+							tiles[row][col].displayPiece();
+							
+						}
+						
+						
+						System.out.println(nextLine);
+						lineNum++;
+						
+						if(lineNum > 4) {
+							if(col == 7) {
+								col = 0;
+								row++;
+							}
+							
+							else{
+								col++;
+							}
+						}		
+					}
+					
+					sc.close();
+					
+					System.out.println("game loaded");
+					actionText.append("game loaded\n");
+					actionText.append("Turn " + turnNumber + "\n");
+					actionText.append(currentPlayerColor + " player's turn..." + "\n");
+					
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
 				}
 			}
+			
+			
 		}
+
+	}
+
+	private class resetHandler implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			int choice = JOptionPane.showOptionDialog(null, "Are you sure you want to reset the game?", "Reset Game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-			
+
 			if(choice == 0) {
 				clearPieces();
 				clearBoard();
@@ -872,13 +1172,13 @@ public class Board extends JPanel{
 			}			
 		}
 	}
-	
+
 	private class exitHandler implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {		
 			int choice = JOptionPane.showOptionDialog(null, "Are you sure you want to quit?", "End Game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-			
+
 			if(choice == 0) {
 				System.exit(0);
 			}

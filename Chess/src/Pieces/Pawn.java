@@ -173,7 +173,8 @@ public class Pawn extends Piece {
 	
 	/**
 	 * Sets the enPassant boolean for this pawn based on its last position
-	 * @param row the last row this pawn was on before its curernt move
+	 * @param row the last row this pawn was on before its current move
+	 * @param turnNumber the current turn number
 	 */
 	public void setEnPassant(int row, int turnNumber) {
 		lastRow = row;
@@ -186,5 +187,27 @@ public class Pawn extends Piece {
 		else {
 			enPassant = false;
 		}		
+	}
+	
+	/**
+	 * Sets the turn a double move was used for this pawn, for use in loading a saved game state
+	 * @param turn the turn that this pawn used a double move in the saved game state
+	 */
+	public void setTurnUsedDoubleMove(int turn) {
+		turnUsedDoubleMove = turn;
+	}
+	
+	/**
+	 * Sets the last row that this pawn was on, for use in loading a saved game state
+	 * @param row the last row that this pawn was on in the saved game state
+	 */
+	public void setLastRow(int row) {
+		lastRow = row;
+	}
+	
+	//add state to string for pawn
+	@Override
+	public String toString() {
+		return super.toString() + "," + enPassant + "," + turnUsedDoubleMove + "," +lastRow;
 	}
 }

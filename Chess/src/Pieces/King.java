@@ -227,5 +227,11 @@ public class King extends Piece {
 		
 		return moves.toArray(new Coordinate[moves.size()]);
 	}
+	
+	//add state to string for king
+	@Override
+	public String toString() {
+		return super.toString() + "," + hasMoved + "," + isInCheck;
+	}
 
 }

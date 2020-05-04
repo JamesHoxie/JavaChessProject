@@ -93,6 +93,14 @@ public abstract class Piece {
 		this.pieceCoordinate.setCol(coordinate.getCol());
 	}
 	
+	/**
+	 * Returns the name of this piece as a string(Rook, Knight, Bishop, Queen, King)
+	 */
+	public String getPieceType() {
+		//getClass() + "" = "class Pieces.<PieceName>"
+		return (getClass() + "").split("\\.")[1];
+	}
+	
 	@Override
 	public boolean equals(Object o) {
 		if(o == this) {
@@ -108,5 +116,10 @@ public abstract class Piece {
 		return p.getClass() == this.getClass() &&
 			   p.getPieceColor() == pieceColor &&
 			   p.getPieceCoordinate() == pieceCoordinate;
+	}
+	
+	@Override
+	public String toString() {
+		return getPieceType() + "," + getPieceColor();
 	}
 }

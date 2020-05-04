@@ -1,12 +1,14 @@
 package Board;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -19,6 +21,8 @@ import Utils.ChessColor;
 
 public class PieceBox extends JPanel {
 	private JPanel capturedWhitePieces, capturedBlackPieces;
+	private ArrayList<String> capturedWhitePiecesTypes = new ArrayList<String>();
+	private ArrayList<String> capturedBlackPiecesTypes = new ArrayList<String>();
 	
 	public PieceBox() {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -29,41 +33,39 @@ public class PieceBox extends JPanel {
 		capturedWhitePieces.setOpaque(true);
 		capturedBlackPieces.setOpaque(true);
 		
-//		JButton cap = new JButton();
-//		cap.setPreferredSize(new Dimension(200, 200));
-//		
-//		cap.addActionListener(new ActionListener(){
-//
-//			@Override
-//			public void actionPerformed(ActionEvent arg0) {
-//				// TODO Auto-generated method stub
-//				System.out.println("got here");
-//				capturePiece(new King(null, ChessColor.BLACK));
-//			}
-//			
-//		});
-//		
-//		add(cap);
 		add(capturedWhitePieces);
 		add(capturedBlackPieces);
-		
 	}
 	
 	public void clear() {
 		capturedWhitePieces.removeAll();
 		capturedBlackPieces.removeAll();
+		capturedWhitePiecesTypes.clear();
+		capturedBlackPiecesTypes.clear();
+		capturedWhitePieces.repaint();
+		capturedBlackPieces.repaint();
 	}
 	
-	public void capturePiece(Piece piece) {
+	public void capturePiece(Piece piece) {		
 		if(piece.getPieceColor() == ChessColor.BLACK) {
 			capturedBlackPieces.add(new JLabel(piece.getPieceIcon()));
+			capturedBlackPiecesTypes.add(piece.getPieceType());
 		}
 		
 		else {
 			capturedWhitePieces.add(new JLabel(piece.getPieceIcon()));
+			capturedWhitePiecesTypes.add(piece.getPieceType());
 		}
 		
 		revalidate();  
 		validate(); 
+	}
+	
+	public ArrayList<String> getCapturedBlackPiecesTypes() {
+		return capturedBlackPiecesTypes;
+	}
+	
+	public ArrayList<String> getCapturedWhitePiecesTypes() {
+		return capturedWhitePiecesTypes;
 	}
 }

@@ -43,8 +43,8 @@ public class GameFrame extends JFrame {
 		//setters for GameFrame
 		setBackground(backgroundColor);
 		setLayout(new BorderLayout());
-		setMinimumSize(new Dimension(1500, 1100));
-		setMaximumSize(new Dimension(1500, 1100));
+		setMinimumSize(new Dimension(1450, 1050));
+		setMaximumSize(new Dimension(1450, 1050));
 		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
