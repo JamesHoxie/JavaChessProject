@@ -3,6 +3,8 @@ package Game;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -26,30 +28,12 @@ public class GameRunner{
 		return !(whitePlayer.isInCheckMate() || blackPlayer.isInCheckMate());
 	}
 	
-	/**
-	 * Static helper function to make changes to the GameFrame before starting the game.
-	 * @param chessGame GameFrame containing the chess game
-	 */
-	public static void setUpGameFrame(GameFrame chessGame) {
-		chessGame.setVisible(true);
-	}
-	
 	public static void main(String[] args) {
+		String[] options = {"Start New Game", "Exit"};
 		GameFrame chessGame = new GameFrame();
+		TitleFrame titleFrame = new TitleFrame(options, chessGame);
 		
-		String[] options = {"Start New Game", "Load Game", "Exit"};
-		int selection = JOptionPane.showOptionDialog(chessGame, "Welcome to chess!", "Java Chess", 0, 0, null, options, null);
-		
-		switch(selection) {
-			case 0:
-				setUpGameFrame(chessGame);
-				break;
-			case 1:
-				JOptionPane.showMessageDialog(chessGame, "Not implemented!");
-				break;
-			case 2:
-				System.exit(0);
-		}
+		titleFrame.setVisible(true);	
 		
 		TurnManager turnManager = new TurnManager(chessGame.gameBoard);
 		
