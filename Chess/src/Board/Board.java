@@ -20,6 +20,8 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import Game.GameFrame;
+import Game.TitleFrame;
 import Pieces.Bishop;
 import Pieces.King;
 import Pieces.Knight;
@@ -46,6 +48,8 @@ public class Board extends JPanel{
 	private TextArea actionText;
 	private PieceBox pieceBox;
 	private MenuBox menuBox;
+	private TitleFrame titleFrame;
+	private GameFrame gameFrame;
 
 	//function sets up pieces on board for start of game
 	void setUpPieces() {
@@ -192,6 +196,8 @@ public class Board extends JPanel{
 	 * @param checkStatus true if this king is in check, false otherwise
 	 */
 	public void setKingCheckStatus(ChessColor kingColor, boolean checkStatus) {
+		System.out.println("**\ncheck status is\n: "+checkStatus);
+		
 		if(kingColor == ChessColor.BLACK) {
 			if(checkStatus == true) {
 				blackKing.setKingInCheck();
@@ -795,6 +801,11 @@ public class Board extends JPanel{
 		}
 
 
+		for(int r = 0; r < tiles.length; r++) {
+			for(int c = 0; c < tiles[r].length; c++) {
+				System.out.println(tiles[r][c].getPiece());
+			}
+		}
 
 		currentMove.clearMove();
 	}
@@ -820,6 +831,11 @@ public class Board extends JPanel{
 				tiles[r][c].displayPiece();
 			}
 		}
+	}
+	
+	public void setExitScreen(TitleFrame titleFrame, GameFrame gameFrame) {
+		this.titleFrame = titleFrame;
+		this.gameFrame = gameFrame;
 	}
 
 	//Handler class for button clicks to tiles on gameboard
@@ -856,6 +872,7 @@ public class Board extends JPanel{
 			path += File.separator + "Java_Chess_Save";
 			File saveLocation = new File(path);
 			File saveFile = new File(path + "/SaveFile.txt");
+			boolean newSave = true;
 
 			if (!(saveLocation.exists())) {
 				if(saveLocation.mkdirs()) {
@@ -867,9 +884,21 @@ public class Board extends JPanel{
 				}
 			}
 
+			
+			
 			try {
 				saveLocation.setWritable(true);
-				saveFile.createNewFile();
+				newSave = saveFile.createNewFile();
+				//if save file already exists, prompt user before overwrite
+				if(!newSave) {
+					//JOptionPane.showOptionDialog(parentComponent, message, title, optionType, messageType, icon, options, initialValue)
+					int choice = JOptionPane.showOptionDialog(null, "Are you sure you want to save this game?\nPrevious saved file will be overwritten", "Load Game", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
+					
+					if(choice != 0) {
+						return;
+					}
+				}			
+				
 				FileWriter fw = new FileWriter(saveFile);
 
 				fw.write(Integer.toString(turnNumber) + "\n");
@@ -911,7 +940,11 @@ public class Board extends JPanel{
 				}
 				
 				fw.close();
-				System.out.println("save file created");
+				
+				if(newSave) {
+					actionText.append("new save file created\n");
+				}
+				
 				actionText.append("game saved!\n");
 			} catch (IOException e) {
 				//e.printStackTrace();
@@ -945,6 +978,14 @@ public class Board extends JPanel{
 			}
 			
 			else {
+				
+				//JOptionPane.showOptionDialog(parentComponent, message, title, optionType, messageType, icon, options, initialValue)
+				int choice = JOptionPane.showOptionDialog(null, "Are you sure you want to load a saved game?\nAll unsaved changes will be lost.", "Load Game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+				
+				if(choice != 0) {
+					return;
+				}
+				
 				clearPieces();
 				clearBoard();
 				
@@ -1114,10 +1155,18 @@ public class Board extends JPanel{
 							if(nextPiece != null) {
 								if(nextPiece.getPieceColor() == ChessColor.BLACK) {
 									blackPieces.add(nextPiece);
+									
+									if(nextPiece instanceof King) {
+										blackKing = (King) nextPiece;
+									}
 								}
 								
 								else {
 									whitePieces.add(nextPiece);
+									
+									if(nextPiece instanceof King) {
+										whiteKing = (King) nextPiece;
+									}
 								}
 							}
 							
@@ -1180,7 +1229,8 @@ public class Board extends JPanel{
 			int choice = JOptionPane.showOptionDialog(null, "Are you sure you want to quit?", "End Game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
 			if(choice == 0) {
-				System.exit(0);
+				gameFrame.dispose();
+				titleFrame.setVisible(true);
 			}
 		}
 	}

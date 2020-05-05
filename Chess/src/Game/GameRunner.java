@@ -17,21 +17,11 @@ import Utils.ChessColor;
  *
  */
 public class GameRunner{
-	
-	/**
-	 * Static helper function to check when the chess game has ended.
-	 * @param whitePlayer white player in this chess game
-	 * @param blackPlayer black player in this chess game
-	 * @return true if either player is in checkmate, indicating the game is over
-	 */
-	public static boolean gameIsNotOver(ChessPlayer whitePlayer, ChessPlayer blackPlayer) {
-		return !(whitePlayer.isInCheckMate() || blackPlayer.isInCheckMate());
-	}
-	
 	public static void main(String[] args) {
 		String[] options = {"Start New Game", "Exit"};
 		GameFrame chessGame = new GameFrame();
 		TitleFrame titleFrame = new TitleFrame(options, chessGame);
+		chessGame.gameBoard.setExitScreen(titleFrame, chessGame);
 		
 		titleFrame.setVisible(true);	
 		
