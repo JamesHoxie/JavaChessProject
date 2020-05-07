@@ -134,4 +134,9 @@ public class Bishop extends Piece {
 	public Coordinate[] generateMoves(Tile[][] tiles, int turnNumber) {
 		return generateBishopMoves(tiles, this);
 	}
+	
+	public Bishop copy() {
+		return new Bishop(getPieceCoordinate(), getPieceColor());
+		
+	}
 }

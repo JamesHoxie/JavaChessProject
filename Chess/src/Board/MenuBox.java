@@ -10,6 +10,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import Utils.Styler;
+
 public class MenuBox extends JPanel{
 	private JButton saveGameButton = new JButton("Save");
 	private JButton loadGameButton = new JButton("Load");
@@ -17,47 +19,21 @@ public class MenuBox extends JPanel{
 	private JButton exitGameButton = new JButton("Exit");
 	
 	public MenuBox() {
-		setLayout(null);	
-		setPreferredSize(new Dimension(100, 400));
+		final int PANEL_WIDTH = 100;
+		final int PANEL_HEIGHT = 400;
+		Styler styler = new Styler();
 		
+		setLayout(null);	
+		setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));		
 		saveGameButton.setBounds(2, 80, 100, 50);
 		loadGameButton.setBounds(2, 180, 100, 50);
 		resetGameButton.setBounds(2, 280, 100, 50);
 		exitGameButton.setBounds(2, 380, 100, 50);
+		styler.styleButton(saveGameButton);
+		styler.styleButton(loadGameButton);
+		styler.styleButton(resetGameButton);
+		styler.styleButton(exitGameButton);
 		
-//		addMouseListener(new MouseListener() {
-//
-//			@Override
-//			public void mouseClicked(MouseEvent arg0) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//
-//			@Override
-//			public void mouseEntered(MouseEvent arg0) {
-//				showButtons();
-//			}
-//
-//			@Override
-//			public void mouseExited(MouseEvent arg0) {
-//				hideButtons();
-//			}
-//
-//			@Override
-//			public void mousePressed(MouseEvent arg0) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//
-//			@Override
-//			public void mouseReleased(MouseEvent arg0) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//			
-//		});
-		
-		//hideButtons();
 		add(saveGameButton);
 		add(loadGameButton);
 		add(resetGameButton);
@@ -70,18 +46,4 @@ public class MenuBox extends JPanel{
 		resetGameButton.addActionListener(resetHandler);
 		exitGameButton.addActionListener(exitHandler);	
 	}
-	
-//	private void showButtons() {
-//		saveGameButton.setVisible(true);
-//		loadGameButton.setVisible(true);
-//		resetGameButton.setVisible(true);
-//		exitGameButton.setVisible(true);
-//	}
-//	
-//	private void hideButtons() {
-//		saveGameButton.setVisible(false);
-//		loadGameButton.setVisible(false);
-//		resetGameButton.setVisible(false);
-//		exitGameButton.setVisible(false);
-//	}
 }

@@ -3,6 +3,7 @@ package Game;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.TextArea;
 import java.awt.event.ActionListener;
 
@@ -13,11 +14,14 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.plaf.FontUIResource;
 
 import Board.Board;
 import Board.MenuBox;
 import Board.PieceBox;
 import Pieces.Pawn;
+import Utils.Styler;
 
 /**
  * 
@@ -27,58 +31,55 @@ import Pieces.Pawn;
  */
 public class GameFrame extends JFrame {
 	JLabel titleBox = new JLabel("This textbox could be used for a title", JLabel.CENTER);
-	//TODO: make menuBox a new class with a menu and buttons (extend jpanel)
 	MenuBox menuBox = new MenuBox();
 	PieceBox pieceBox = new PieceBox();
 	TextArea actionText = new TextArea("", 5, 100);
 	Board gameBoard = new Board(8, 8, actionText, pieceBox, menuBox);
-	JButton saveGameButton = new JButton("Save");
+	Styler styler = new Styler();
+
 	/**
 	 * Class Constructor
 	 */
 	public GameFrame() {
 		super("Chess");
-		Color backgroundColor = new Color(90, 60, 60);
+		final Color BACKGROUND_COLOR = new Color(90, 60, 60);
+		final int FRAME_WIDTH = 1450;
+		final int FRAME_HEIGHT = 950;
 		
 		//setters for GameFrame
-		setBackground(backgroundColor);
 		setLayout(new BorderLayout());
-		setMinimumSize(new Dimension(1450, 1050));
-		setMaximumSize(new Dimension(1450, 1050));
+		setMinimumSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+		setMaximumSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		//setters for gameBoard
 		gameBoard.setOpaque(true);
-		gameBoard.setBackground(backgroundColor);
+		gameBoard.setBackground(BACKGROUND_COLOR);
 		
 		//setters for titleBox
 		titleBox.setOpaque(true);
-		titleBox.setBackground(backgroundColor);
+		titleBox.setBackground(BACKGROUND_COLOR);
 		titleBox.setHorizontalTextPosition(JLabel.CENTER);
 		
 		//setters for actionText
 		actionText.setEditable(false);
 		
 		//setters for pieceBox
-		pieceBox.setPreferredSize(new Dimension(300, 400));
 		pieceBox.setOpaque(true);
-		pieceBox.setBackground(backgroundColor);
-		
-		
+		pieceBox.setBackground(BACKGROUND_COLOR);
+			
 		//setters for menuBox
 		menuBox.setOpaque(true);
-		menuBox.setBackground(backgroundColor);
+		menuBox.setBackground(BACKGROUND_COLOR);		
 		
+		styler.changeJOP();
 		
 		//add components
 		add(gameBoard, BorderLayout.CENTER);
 		add(titleBox, BorderLayout.NORTH);
 		add(pieceBox, BorderLayout.EAST);
 		add(menuBox, BorderLayout.WEST);
-		add(actionText, BorderLayout.SOUTH);
-		
-
-		
+		add(actionText, BorderLayout.SOUTH);		
 	}
 }

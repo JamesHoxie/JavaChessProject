@@ -1,5 +1,7 @@
 package Game;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -7,6 +9,10 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.FontUIResource;
+import javax.swing.plaf.synth.SynthLookAndFeel;
 
 import Board.Tile;
 import Utils.ChessColor;
@@ -21,11 +27,17 @@ public class GameRunner{
 		String[] options = {"Start New Game", "Exit"};
 		GameFrame chessGame = new GameFrame();
 		TitleFrame titleFrame = new TitleFrame(options, chessGame);
+		TurnManager turnManager = new TurnManager(chessGame.gameBoard);
+		
 		chessGame.gameBoard.setExitScreen(titleFrame, chessGame);
 		
-		titleFrame.setVisible(true);	
+		//full screen
+		//chessGame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		//chessGame.setUndecorated(true);
 		
-		TurnManager turnManager = new TurnManager(chessGame.gameBoard);
+		titleFrame.pack();
+		titleFrame.setLocationRelativeTo(null);
+		titleFrame.setVisible(true);		
 		
 		Thread t1 = new Thread(new Runnable() {
 			@Override

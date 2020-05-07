@@ -43,4 +43,8 @@ public class Queen extends Piece {
 		
 		return queenMoves; 
 	}
+	
+	public Queen copy() {
+		return new Queen(getPieceCoordinate(), getPieceColor());	
+	}
 }

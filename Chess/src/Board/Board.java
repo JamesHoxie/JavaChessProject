@@ -196,8 +196,6 @@ public class Board extends JPanel{
 	 * @param checkStatus true if this king is in check, false otherwise
 	 */
 	public void setKingCheckStatus(ChessColor kingColor, boolean checkStatus) {
-		System.out.println("**\ncheck status is\n: "+checkStatus);
-		
 		if(kingColor == ChessColor.BLACK) {
 			if(checkStatus == true) {
 				blackKing.setKingInCheck();
@@ -335,12 +333,12 @@ public class Board extends JPanel{
 
 		if(threatenedCoordinates.contains(kingBeingChecked.getPieceCoordinate())) {
 			playerInCheck = playerColor;
-			System.out.println(currentPlayerColor + "player is in check");
+			//System.out.println(currentPlayerColor + "player is in check");
 		}
 
 		else {
 			playerInCheck = null;
-			System.out.println(currentPlayerColor + " player is not in check");
+			//System.out.println(currentPlayerColor + " player is not in check");
 		}
 
 	}
@@ -354,25 +352,73 @@ public class Board extends JPanel{
 	public void checkForCheckMate(ChessColor playerColor) {
 		Coordinate[] moves;
 		Move nextPossibleMove = new Move();
-		ArrayList<Piece> friendlyPieces;
+		ArrayList<Piece> friendlyPieces = new ArrayList<Piece>();
 		Tile sourceTile, destinationTile;
 		Piece[] originalPlacements;
 
 		if(playerColor == ChessColor.WHITE) {
-			friendlyPieces = whitePieces;
+			for(Piece piece : whitePieces) {			
+				if(piece instanceof Bishop) {
+					friendlyPieces.add(((Bishop) piece).copy());
+				}
+				
+				else if(piece instanceof King) {
+					friendlyPieces.add(((King) piece).copy());
+				}
+				
+				else if(piece instanceof Knight) {
+					friendlyPieces.add(((Knight) piece).copy());
+				}
+				
+				else if(piece instanceof Pawn) {
+					friendlyPieces.add(((Pawn) piece).copy());
+				}
+				
+				else if(piece instanceof Queen) {
+					friendlyPieces.add(((Queen) piece).copy());
+				}
+				
+				else if(piece instanceof Rook) {
+					friendlyPieces.add(((Rook) piece).copy());
+				}
+			}
 		}
 
 		else {
-			friendlyPieces = blackPieces;
+			for(Piece piece : blackPieces) {
+				if(piece instanceof Bishop) {
+					friendlyPieces.add(((Bishop) piece).copy());
+				}
+				
+				else if(piece instanceof King) {
+					friendlyPieces.add(((King) piece).copy());
+				}
+				
+				else if(piece instanceof Knight) {
+					friendlyPieces.add(((Knight) piece).copy());
+				}
+				
+				else if(piece instanceof Pawn) {
+					friendlyPieces.add(((Pawn) piece).copy());
+				}
+				
+				else if(piece instanceof Queen) {
+					friendlyPieces.add(((Queen) piece).copy());
+				}
+				
+				else if(piece instanceof Rook) {
+					friendlyPieces.add(((Rook) piece).copy());
+				}
+			}
 		}
 
 		for(Piece piece : friendlyPieces) {
-
+			
 			System.out.println(piece);
 
 			moves = piece.generateMoves(tiles, turnNumber);
 
-			for(Coordinate c: moves) {
+			for(Coordinate c : moves) {
 				sourceTile = getTile(piece.getPieceCoordinate());
 				destinationTile = getTile(c);
 				nextPossibleMove.setSource(sourceTile);
@@ -383,7 +429,7 @@ public class Board extends JPanel{
 					checkForCheck(playerColor);
 
 					if(playerInCheck != playerColor) {
-						System.out.println("No player is in checkmate");
+						//System.out.println("No player is in checkmate");
 						playerInCheckMate = null;
 						//this line resets playerInCheck marker that gets altered in process of checking for checkmate
 						playerInCheck = playerColor;
@@ -398,7 +444,6 @@ public class Board extends JPanel{
 			}
 		}
 
-		System.out.println(playerColor + " player is in checkmate");
 		playerInCheckMate = playerColor;
 	}
 
@@ -696,7 +741,6 @@ public class Board extends JPanel{
 		}
 
 		else if(isCastlingMove(move)) {
-			System.out.println("attempted castling");
 			return executeCastlingMove(move);
 		}
 
@@ -774,23 +818,58 @@ public class Board extends JPanel{
 				if(playerInCheck != null) {
 					actionText.append(playerInCheck + " player is in check\n");
 					setKingCheckStatus(playerInCheck, true);
+					
+					if(playerInCheck == currentPlayerColor) {
+						//check if other player was put into checkmate from last players move
+						checkForCheckMate(currentPlayerColor);
+
+						if(playerInCheckMate == currentPlayerColor) {
+							actionText.append("GAME SET! \n" + playerInCheckMate + " player is in checkmate!");
+							JOptionPane.showMessageDialog(null, "GAME SET! \n" + playerInCheckMate + " player is in checkmate!");
+							
+							//JOptionPane.showOptionDialog(parentComponent, message, title, optionType, messageType, icon, options, initialValue)
+							int choice = JOptionPane.showOptionDialog(null, "Play again?", "Replay", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+						
+							if(choice == 0) {
+								clearPieces();
+								clearBoard();
+								setUpPieces();
+								turnNumber--;
+							}
+							
+							else {
+								gameFrame.dispose();
+								titleFrame.setVisible(true);
+							}
+						}
+
+					}
 				}
 
 				else {
 					setKingCheckStatus(playerInCheck, false);
-				}
-
-				if(playerInCheck == currentPlayerColor) {
-					//check if other player was put into checkmate from last players move
-					checkForCheckMate(currentPlayerColor);
-
-					if(playerInCheckMate == currentPlayerColor) {
-						actionText.append("GAME SET! \n" + playerInCheckMate + " player is in checkmate!");
-						JOptionPane.showMessageDialog(null, "GAME SET! \n" + playerInCheckMate + " player is in checkmate!");
-						//TODO: game is over, adjust shut down procedures
-						System.exit(0);
+					
+					//check if other player was put into stalemate from last players move
+					if(checkForStaleMate(currentPlayerColor)) {
+						//match ended in stalemate
+						actionText.append("GAME SET! THIS GAME HAS ENDED IN STALEMATE!");
+						JOptionPane.showMessageDialog(null, "GAME SET! THIS GAME HAS ENDED IN STALEMATE!");
+						
+						//JOptionPane.showOptionDialog(parentComponent, message, title, optionType, messageType, icon, options, initialValue)
+						int choice = JOptionPane.showOptionDialog(null, "Play again?", "Replay", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+					
+						if(choice == 0) {
+							clearPieces();
+							clearBoard();
+							setUpPieces();
+							turnNumber--;
+						}
+						
+						else {
+							gameFrame.dispose();
+							titleFrame.setVisible(true);
+						}
 					}
-
 				}
 
 				turnNumber++;
@@ -801,18 +880,116 @@ public class Board extends JPanel{
 		}
 
 
-		for(int r = 0; r < tiles.length; r++) {
-			for(int c = 0; c < tiles[r].length; c++) {
-				System.out.println(tiles[r][c].getPiece());
-			}
-		}
+//		for(int r = 0; r < tiles.length; r++) {
+//			for(int c = 0; c < tiles[r].length; c++) {
+//				System.out.println(tiles[r][c].getPiece());
+//			}
+//		}
 
 		currentMove.clearMove();
 	}
 	
+	private boolean checkForStaleMate(ChessColor playerColor) {	
+		Coordinate[] moves;
+		Move nextPossibleMove = new Move();
+		ArrayList<Piece> friendlyPieces = new ArrayList<Piece>();
+		Tile sourceTile, destinationTile;
+		Piece[] originalPlacements;
+
+		if(playerColor == ChessColor.WHITE) {
+			for(Piece piece : whitePieces) {			
+				if(piece instanceof Bishop) {
+					friendlyPieces.add(((Bishop) piece).copy());
+				}
+				
+				else if(piece instanceof King) {
+					friendlyPieces.add(((King) piece).copy());
+				}
+				
+				else if(piece instanceof Knight) {
+					friendlyPieces.add(((Knight) piece).copy());
+				}
+				
+				else if(piece instanceof Pawn) {
+					friendlyPieces.add(((Pawn) piece).copy());
+				}
+				
+				else if(piece instanceof Queen) {
+					friendlyPieces.add(((Queen) piece).copy());
+				}
+				
+				else if(piece instanceof Rook) {
+					friendlyPieces.add(((Rook) piece).copy());
+				}
+			}
+		}
+
+		else {
+			for(Piece piece : blackPieces) {
+				if(piece instanceof Bishop) {
+					friendlyPieces.add(((Bishop) piece).copy());
+				}
+				
+				else if(piece instanceof King) {
+					friendlyPieces.add(((King) piece).copy());
+				}
+				
+				else if(piece instanceof Knight) {
+					friendlyPieces.add(((Knight) piece).copy());
+				}
+				
+				else if(piece instanceof Pawn) {
+					friendlyPieces.add(((Pawn) piece).copy());
+				}
+				
+				else if(piece instanceof Queen) {
+					friendlyPieces.add(((Queen) piece).copy());
+				}
+				
+				else if(piece instanceof Rook) {
+					friendlyPieces.add(((Rook) piece).copy());
+				}
+			}
+		}
+
+		for(Piece piece : friendlyPieces) {
+			
+			System.out.println(piece);
+
+			moves = piece.generateMoves(tiles, turnNumber);
+
+			for(Coordinate c : moves) {
+				sourceTile = getTile(piece.getPieceCoordinate());
+				destinationTile = getTile(c);
+				nextPossibleMove.setSource(sourceTile);
+				nextPossibleMove.setDestination(destinationTile);
+
+				if(isValidMove(nextPossibleMove) && !(isCastlingMove(nextPossibleMove))) {
+					originalPlacements = executeMove(nextPossibleMove);
+					checkForCheck(playerColor);
+
+					if(playerInCheck != playerColor) {
+						//this line resets playerInCheck marker that gets altered in process of checking for stalemate
+						playerInCheck = playerColor;
+						undoMove(originalPlacements, nextPossibleMove);
+						nextPossibleMove.clearMove();
+						return false;
+					}
+
+					undoMove(originalPlacements, nextPossibleMove);
+					nextPossibleMove.clearMove();
+				}
+			}
+		}
+		
+		return true;
+	}
+
 	private void clearPieces() {
 		whitePieces.clear();
 		blackPieces.clear();
+		whiteKing = null;
+		blackKing = null;
 		turnNumber = 1;
 		currentMove.clearMove();
 		currentPlayerColor = ChessColor.WHITE;
@@ -851,13 +1028,11 @@ public class Board extends JPanel{
 				//if clicked piece matches color of player taking their turn
 				if(clickedPiece != null && clickedPiece.getPieceColor() == currentPlayerColor) {
 					currentMove.setSource(clickedTile);
-					System.out.println("SOURCE SET!");
 				}
 			}
 
 			else if(!(currentMove.destinationSelected())) {
 				currentMove.setDestination(clickedTile);
-				System.out.println("DESTINATION SET!");
 				tryMove();
 			}
 		}
@@ -980,7 +1155,7 @@ public class Board extends JPanel{
 			else {
 				
 				//JOptionPane.showOptionDialog(parentComponent, message, title, optionType, messageType, icon, options, initialValue)
-				int choice = JOptionPane.showOptionDialog(null, "Are you sure you want to load a saved game?\nAll unsaved changes will be lost.", "Load Game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+				int choice = JOptionPane.showOptionDialog(null, "Are you sure you want to load a saved game?\nAll unsaved changes will be lost.", "Load Game", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
 				
 				if(choice != 0) {
 					return;
@@ -1212,7 +1387,7 @@ public class Board extends JPanel{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			int choice = JOptionPane.showOptionDialog(null, "Are you sure you want to reset the game?", "Reset Game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+			int choice = JOptionPane.showOptionDialog(null, "Are you sure you want to reset the game?", "Reset Game", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
 
 			if(choice == 0) {
 				clearPieces();

@@ -8,7 +8,6 @@ import Board.Tile;
 import Utils.ChessColor;
 import Utils.Coordinate;
 
-//TODO: Implement castling
 
 /**
  * This class represents the King piece in a chess game.
@@ -234,4 +233,18 @@ public class King extends Piece {
 		return super.toString() + "," + hasMoved + "," + isInCheck;
 	}
 
+	public King copy() {
+		King copy = new King(getPieceCoordinate(), getPieceColor());
+		
+		if(hasMoved) {
+			copy.setKingHasMoved();
+		}
+		
+		if(isInCheck) {
+			copy.setKingInCheck();
+		}
+		
+		return copy;	
+	}
+	
 }

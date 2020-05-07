@@ -25,7 +25,11 @@ public class PieceBox extends JPanel {
 	private ArrayList<String> capturedBlackPiecesTypes = new ArrayList<String>();
 	
 	public PieceBox() {
+		final int PANEL_WIDTH = 300;
+		final int PANEL_HEIGHT = 400;
+		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
 		capturedWhitePieces = new JPanel();
 		capturedBlackPieces = new JPanel();
 		capturedWhitePieces.setBackground(Color.DARK_GRAY);

@@ -161,4 +161,14 @@ public class Rook extends Piece {
 	public String toString() {
 		return super.toString() + "," + hasMoved;
 	}
+	
+	public Rook copy() {
+		Rook copy = new Rook(getPieceCoordinate(), getPieceColor());
+		
+		if(copy.hasMoved()) {
+			copy.setRookHasMoved();
+		}
+		
+		return copy;
+	}
 }

@@ -52,4 +52,8 @@ public class Knight extends Piece {
 		
 		return validMoves.toArray(new Coordinate[validMoves.size()]);
 	}
+	
+	public Knight copy() {
+		return new Knight(getPieceCoordinate(),getPieceColor());
+	}
 }

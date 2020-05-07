@@ -210,4 +210,18 @@ public class Pawn extends Piece {
 	public String toString() {
 		return super.toString() + "," + enPassant + "," + turnUsedDoubleMove + "," +lastRow;
 	}
+	
+	public Pawn copy() {
+		Pawn copy = new Pawn(getPieceCoordinate(), getPieceColor());
+		
+		if(enPassant) {
+			copy.setEnPassant(lastRow, turnUsedDoubleMove);
+		}
+		
+		copy.setLastRow(lastRow);
+		
+		copy.setTurnUsedDoubleMove(turnUsedDoubleMove);
+		
+		return copy;	
+	}
 }
