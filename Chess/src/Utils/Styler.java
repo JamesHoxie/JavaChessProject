@@ -19,14 +19,6 @@ public class Styler {
 		button.setForeground(BUTTON_FOREGROUND);
 	}
 	
-	public void styleFrame() {
-		
-	}
-	
-	public void styleWindow() {
-		
-	}
-	
 	public void changeJOP(){
 		UIManager.put("Label.font", new FontUIResource
 				(new Font("Helvetica", Font.PLAIN, 28)));

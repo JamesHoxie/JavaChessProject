@@ -30,7 +30,7 @@ import Utils.Styler;
  *
  */
 public class GameFrame extends JFrame {
-	JLabel titleBox = new JLabel("This textbox could be used for a title", JLabel.CENTER);
+	JLabel titleBox = new JLabel("Java Chess", JLabel.CENTER);
 	MenuBox menuBox = new MenuBox();
 	PieceBox pieceBox = new PieceBox();
 	TextArea actionText = new TextArea("", 5, 100);
@@ -43,13 +43,12 @@ public class GameFrame extends JFrame {
 	public GameFrame() {
 		super("Chess");
 		final Color BACKGROUND_COLOR = new Color(90, 60, 60);
-		final int FRAME_WIDTH = 1450;
-		final int FRAME_HEIGHT = 950;
+		final int FRAME_WIDTH = 1400;
+		final int FRAME_HEIGHT = 1025;
 		
 		//setters for GameFrame
 		setLayout(new BorderLayout());
-		setMinimumSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
-		setMaximumSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+		setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
@@ -60,6 +59,8 @@ public class GameFrame extends JFrame {
 		//setters for titleBox
 		titleBox.setOpaque(true);
 		titleBox.setBackground(BACKGROUND_COLOR);
+		titleBox.setFont(new Font("Helvetica", Font.BOLD, 18));
+		titleBox.setForeground(new Color(225, 225, 225));
 		titleBox.setHorizontalTextPosition(JLabel.CENTER);
 		
 		//setters for actionText
