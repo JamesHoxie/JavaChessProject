@@ -8,13 +8,20 @@ import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -50,6 +57,12 @@ public class Board extends JPanel{
 	private MenuBox menuBox;
 	private TitleFrame titleFrame;
 	private GameFrame gameFrame;
+	private File f;
+	private AudioInputStream ais;
+	private Clip clip;
+	private File f2;
+	private AudioInputStream ais2;
+	private Clip clip2;
 
 	//function sets up pieces on board for start of game
 	void setUpPieces() {
@@ -188,6 +201,20 @@ public class Board extends JPanel{
 		this.actionText = actionText;
 		actionText.append("Turn " + turnNumber + "\n");
 		actionText.append(currentPlayerColor + " player's turn..." + "\n");
+		
+		try {
+			f = new File("src/resources/tile_click.wav");
+			f2 = new File("src/resources/button_click.wav");
+			ais = AudioSystem.getAudioInputStream(f);
+			ais2 = AudioSystem.getAudioInputStream(f2);
+			clip = AudioSystem.getClip();
+			clip2 = AudioSystem.getClip();
+			clip.open(ais);
+			clip2.open(ais2);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -276,7 +303,7 @@ public class Board extends JPanel{
 		for(Piece p: pieces) {
 			if(p instanceof Pawn && (p.getPieceCoordinate().getRow() == 0 || p.getPieceCoordinate().getRow() == 7)) {
 				String[] options = {"Queen", "Rook", "Bishop", "Knight"};
-				selection = JOptionPane.showOptionDialog(null, "Select piece to promote to...", "Pawn Promotion", 0, JOptionPane.PLAIN_MESSAGE, null, options, 0);
+				selection = JOptionPane.showOptionDialog(getParent(), "Select piece to promote to...", "Pawn Promotion", 0, JOptionPane.PLAIN_MESSAGE, null, options, 0);
 				pawnToPromote = (Pawn) p;
 				break;
 			}
@@ -825,10 +852,10 @@ public class Board extends JPanel{
 
 						if(playerInCheckMate == currentPlayerColor) {
 							actionText.append("GAME SET! \n" + playerInCheckMate + " player is in checkmate!");
-							JOptionPane.showMessageDialog(null, "GAME SET! \n" + playerInCheckMate + " player is in checkmate!");
+							JOptionPane.showMessageDialog(getParent(), "GAME SET! \n" + playerInCheckMate + " player is in checkmate!");
 							
 							//JOptionPane.showOptionDialog(parentComponent, message, title, optionType, messageType, icon, options, initialValue)
-							int choice = JOptionPane.showOptionDialog(null, "Play again?", "Replay", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+							int choice = JOptionPane.showOptionDialog(getParent(), "Play again?", "Replay", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 						
 							if(choice == 0) {
 								clearPieces();
@@ -853,10 +880,10 @@ public class Board extends JPanel{
 					if(checkForStaleMate(currentPlayerColor)) {
 						//match ended in stalemate
 						actionText.append("GAME SET! THIS GAME HAS ENDED IN STALEMATE!");
-						JOptionPane.showMessageDialog(null, "GAME SET! THIS GAME HAS ENDED IN STALEMATE!");
+						JOptionPane.showMessageDialog(getParent(), "GAME SET! THIS GAME HAS ENDED IN STALEMATE!");
 						
 						//JOptionPane.showOptionDialog(parentComponent, message, title, optionType, messageType, icon, options, initialValue)
-						int choice = JOptionPane.showOptionDialog(null, "Play again?", "Replay", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+						int choice = JOptionPane.showOptionDialog(getParent(), "Play again?", "Replay", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 					
 						if(choice == 0) {
 							clearPieces();
@@ -1010,6 +1037,26 @@ public class Board extends JPanel{
 		}
 	}
 	
+	private void playClip() {
+		try {
+			clip.start();
+			clip.setFramePosition(0);
+		}
+		catch(Exception exception) {
+			exception.printStackTrace();
+		}
+	}
+	
+	private void playClip2() {
+		try {
+			clip2.start();
+			clip2.setFramePosition(0);
+		}
+		catch(Exception exception) {
+			exception.printStackTrace();
+		}
+	}
+	
 	public void setExitScreen(TitleFrame titleFrame, GameFrame gameFrame) {
 		this.titleFrame = titleFrame;
 		this.gameFrame = gameFrame;
@@ -1020,8 +1067,12 @@ public class Board extends JPanel{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			playClip();
+			
 			Tile clickedTile = (Tile) e.getSource();
 			Piece clickedPiece = clickedTile.getPiece();
+			
+			
 
 			if(!(currentMove.sourceSelected())) {
 				//if clicked tile has a piece and 
@@ -1043,6 +1094,8 @@ public class Board extends JPanel{
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {	
+			playClip2();
+			
 			String path = System.getProperty("user.home") + File.separator + "Documents";
 			path += File.separator + "Java_Chess_Save";
 			File saveLocation = new File(path);
@@ -1067,7 +1120,7 @@ public class Board extends JPanel{
 				//if save file already exists, prompt user before overwrite
 				if(!newSave) {
 					//JOptionPane.showOptionDialog(parentComponent, message, title, optionType, messageType, icon, options, initialValue)
-					int choice = JOptionPane.showOptionDialog(null, "Are you sure you want to save this game?\nPrevious saved file will be overwritten", "Load Game", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
+					int choice = JOptionPane.showOptionDialog(getParent(), "Are you sure you want to save this game?\nPrevious saved file will be overwritten", "Save Game", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
 					
 					if(choice != 0) {
 						return;
@@ -1123,7 +1176,7 @@ public class Board extends JPanel{
 				actionText.append("game saved!\n");
 			} catch (IOException e) {
 				//e.printStackTrace();
-				JOptionPane.showMessageDialog(null, "Error saving file");
+				JOptionPane.showMessageDialog(getParent(), "Error saving file");
 			}
 
 		}
@@ -1134,6 +1187,8 @@ public class Board extends JPanel{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			playClip2();
+			
 			String path = System.getProperty("user.home") + File.separator + "Documents";
 			path += File.separator + "Java_Chess_Save";
 			File saveLocation = new File(path);
@@ -1145,17 +1200,17 @@ public class Board extends JPanel{
 			int turnNum = -1;
 			
 			if(!(saveLocation.exists())) {
-				JOptionPane.showMessageDialog(null, "No save location detected");
+				JOptionPane.showMessageDialog(getParent(), "No save location detected");
 			}
 			
 			else if(!(saveFile.exists())) {
-				JOptionPane.showMessageDialog(null, "No save file detected");
+				JOptionPane.showMessageDialog(getParent(), "No save file detected");
 			}
 			
 			else {
 				
 				//JOptionPane.showOptionDialog(parentComponent, message, title, optionType, messageType, icon, options, initialValue)
-				int choice = JOptionPane.showOptionDialog(null, "Are you sure you want to load a saved game?\nAll unsaved changes will be lost.", "Load Game", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
+				int choice = JOptionPane.showOptionDialog(getParent(), "Are you sure you want to load a saved game?\nAll unsaved changes will be lost.", "Load Game", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
 				
 				if(choice != 0) {
 					return;
@@ -1387,7 +1442,9 @@ public class Board extends JPanel{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			int choice = JOptionPane.showOptionDialog(null, "Are you sure you want to reset the game?", "Reset Game", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
+			playClip2();
+			
+			int choice = JOptionPane.showOptionDialog(getParent(), "Are you sure you want to reset the game?", "Reset Game", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
 
 			if(choice == 0) {
 				clearPieces();
@@ -1400,10 +1457,15 @@ public class Board extends JPanel{
 	private class exitHandler implements ActionListener {
 
 		@Override
-		public void actionPerformed(ActionEvent e) {		
-			int choice = JOptionPane.showOptionDialog(null, "Are you sure you want to quit?", "End Game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+		public void actionPerformed(ActionEvent e) {	
+			playClip2();
+			
+			int choice = JOptionPane.showOptionDialog(getParent(), "Are you sure you want to quit?", "End Game", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
 			if(choice == 0) {
+				clearPieces();
+				clearBoard();
+				setUpPieces();
 				gameFrame.dispose();
 				titleFrame.setVisible(true);
 			}

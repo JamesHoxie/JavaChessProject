@@ -5,8 +5,12 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -20,6 +24,9 @@ import Utils.Styler;
 public class TitleFrame extends JFrame{
 	GameFrame chessGame;
 	JLabel titleLabel, titleImage;
+	private File f;
+	private AudioInputStream ais;
+	private Clip clip;
 	
 	public TitleFrame(String[] options, GameFrame chessGame){
 		super("Java Chess");
@@ -41,6 +48,26 @@ public class TitleFrame extends JFrame{
 		add(titleLabel);
 		add(titleImage);
 		addButtons(options);
+		
+		try {
+			f = new File("src/resources/button_click.wav");
+			ais = AudioSystem.getAudioInputStream(f);
+			clip = AudioSystem.getClip();
+			clip.open(ais);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void playClip() {
+		try {
+			clip.start();
+			clip.setFramePosition(0);
+		}
+		catch(Exception exception) {
+			exception.printStackTrace();
+		}
 	}
 
 	private void addButtons(String[] options) {
@@ -54,6 +81,7 @@ public class TitleFrame extends JFrame{
 				case "Start New Game":
 					nextButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
+							playClip();
 							chessGame.pack();
 							chessGame.setLocationRelativeTo(null);
 							chessGame.setVisible(true);
@@ -64,6 +92,7 @@ public class TitleFrame extends JFrame{
 				case "Exit":
 					nextButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
+							playClip();
 							System.exit(0);
 						}			
 					});
