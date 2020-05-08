@@ -638,16 +638,22 @@ public class Board extends JPanel{
 	 */
 	public Pawn isEnPassantMove(Move move) {
 		Tile sourceTile = move.getSourceTile();
+		Tile destTile = move.getDestinationTile();
 		Piece piece = sourceTile.getPiece();
 		int enemyCol1 = -1, enemyCol2 = -1;
 		Coordinate enemyCoordinate1 = null, enemyCoordinate2 = null;
-
-		if(piece != null) {
-			enemyCol1 = piece.getPieceCoordinate().getCol() - 1;
-			enemyCol2 = piece.getPieceCoordinate().getCol() + 1;
-			enemyCoordinate1 = new Coordinate(piece.getPieceCoordinate().getRow(), enemyCol1);
-			enemyCoordinate2 = new Coordinate(piece.getPieceCoordinate().getRow(), enemyCol2);
+		Pawn movingPawn, enemyPawn;
+		
+		if(!(destTile.isEmpty()) || piece == null || !(piece instanceof Pawn)) {
+			return null;
 		}
+		
+		movingPawn = (Pawn) piece;
+
+		enemyCol1 = piece.getPieceCoordinate().getCol() - 1;
+		enemyCol2 = piece.getPieceCoordinate().getCol() + 1;
+		enemyCoordinate1 = new Coordinate(piece.getPieceCoordinate().getRow(), enemyCol1);
+		enemyCoordinate2 = new Coordinate(piece.getPieceCoordinate().getRow(), enemyCol2);
 
 		Piece enemyPiece1 = null;
 		Piece enemyPiece2 = null;
@@ -659,20 +665,58 @@ public class Board extends JPanel{
 		if(Coordinate.isValidCoordinate(enemyCoordinate2, xSize, ySize)) {
 			enemyPiece2 = getTile(enemyCoordinate2).getPiece();
 		}
-
-		if(piece instanceof Pawn &&
-				(enemyPiece1 instanceof Pawn &&
-						((Pawn) enemyPiece1).canBeCapturedEnPassant(turnNumber))) {
-
-			return (Pawn) enemyPiece1;
+		
+		if(enemyPiece1 instanceof Pawn) {
+			enemyPawn = (Pawn) enemyPiece1;
+			
+			if(enemyPawn.canBeCapturedEnPassant(turnNumber)) {
+				if(movingPawn.getPieceColor() == ChessColor.BLACK &&
+						enemyPawn.getPieceColor() == ChessColor.WHITE) {
+					
+					if(destTile.getCoordinate().equals(new Coordinate(
+							enemyPawn.getPieceCoordinate().getRow() + 1, enemyPawn.getPieceCoordinate().getCol()))) {
+						return enemyPawn;
+					}
+						
+				}
+				
+				else if(movingPawn.getPieceColor() == ChessColor.WHITE && 
+					    	enemyPawn.getPieceColor() == ChessColor.BLACK){
+					
+					if(destTile.getCoordinate().equals(new Coordinate(
+							enemyPawn.getPieceCoordinate().getRow() - 1, enemyPawn.getPieceCoordinate().getCol()))) {
+						return enemyPawn;
+					}
+					
+				}
+			}
 		}
-
-		if(piece instanceof Pawn &&
-				(enemyPiece2 instanceof Pawn &&
-						((Pawn) enemyPiece2).canBeCapturedEnPassant(turnNumber))) {
-
-			return (Pawn) enemyPiece2;
-		}	
+		
+		if(enemyPiece2 instanceof Pawn) {
+			enemyPawn = (Pawn) enemyPiece2;
+			
+			if(enemyPawn.canBeCapturedEnPassant(turnNumber)) {
+				if(movingPawn.getPieceColor() == ChessColor.BLACK &&
+						enemyPawn.getPieceColor() == ChessColor.WHITE) {
+					
+					if(destTile.getCoordinate().equals(new Coordinate(
+							enemyPawn.getPieceCoordinate().getRow() + 1, enemyPawn.getPieceCoordinate().getCol()))) {
+						return enemyPawn;
+					}
+						
+				}
+				
+				else if(movingPawn.getPieceColor() == ChessColor.WHITE && 
+					    	enemyPawn.getPieceColor() == ChessColor.BLACK){
+					
+					if(destTile.getCoordinate().equals(new Coordinate(
+							enemyPawn.getPieceCoordinate().getRow() - 1, enemyPawn.getPieceCoordinate().getCol()))) {
+						return enemyPawn;
+					}
+					
+				}
+			}
+		}
 
 		return null;
 	}
