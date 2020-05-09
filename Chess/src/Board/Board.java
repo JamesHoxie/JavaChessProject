@@ -731,6 +731,10 @@ public class Board extends JPanel{
 		//check all generated moves, if coordinates of any match coordinates of destination tile then
 		//move is valid
 		for(Coordinate c: validMoves) {
+			if(sourceTile == null || destinationTile == null) {
+				return false;
+			}
+			
 			if(c.equals(destinationTile.getCoordinate())) {
 				return true;
 			}
@@ -774,6 +778,8 @@ public class Board extends JPanel{
 		else {
 			undoStandardMove(originalPlacements, move);
 		}
+		
+		capturedPiece = null;
 	}
 
 	public Piece[] executeStandardMove(Move move) {
@@ -849,7 +855,7 @@ public class Board extends JPanel{
 			Piece[] originalPlacements;
 			originalPlacements = executeMove(currentMove);
 
-			//placements will be null is castling attempt failed, try another move
+			//placements will be null if castling attempt failed, try another move
 			if(originalPlacements == null) {
 				currentMove.clearMove();
 				return;
@@ -859,11 +865,13 @@ public class Board extends JPanel{
 
 			//if this move put this player in check, undo and try another move
 			if(playerInCheck == currentPlayerColor) {
+				System.out.println("undid move");
 				undoMove(originalPlacements, currentMove);
 			}
 
 			//player was not put in check by move, display the move
 			else {
+				System.out.println("displayed move");
 				displayMove();
 
 				//set enpassant status if this piece is a pawn
@@ -950,13 +958,6 @@ public class Board extends JPanel{
 
 		}
 
-
-//		for(int r = 0; r < tiles.length; r++) {
-//			for(int c = 0; c < tiles[r].length; c++) {
-//				System.out.println(tiles[r][c].getPiece());
-//			}
-//		}
-
 		currentMove.clearMove();
 	}
 	
@@ -1024,8 +1025,6 @@ public class Board extends JPanel{
 		}
 
 		for(Piece piece : friendlyPieces) {
-			
-			System.out.println(piece);
 
 			moves = piece.generateMoves(tiles, turnNumber);
 
