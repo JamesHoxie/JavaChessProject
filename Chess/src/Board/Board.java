@@ -39,7 +39,12 @@ import Pieces.Rook;
 import Utils.ChessColor;
 import Utils.Coordinate;
 
-//board class contains 2d array of tiles that contain pieces used for play
+/**
+ * The board class contains a 2d array of tiles that contain the pieces used for play, as well as 
+ * carrying out all the game logic
+ * @author James Hoxie
+ *
+ */
 public class Board extends JPanel{
 	private int xSize, ySize;
 	private int turnNumber = 1;
@@ -64,8 +69,49 @@ public class Board extends JPanel{
 	private AudioInputStream ais2;
 	private Clip clip2;
 
-	//function sets up pieces on board for start of game
-	void setUpPieces() {
+	/**
+	 * 
+	 * @param xSize number of tiles going horizontally
+	 * @param ySize number of tiles going vertically
+	 * @param actionText the text box that displays at the bottom of the frame
+	 * @param pieceBox the set of panels on the right of the frame that displays pieces that have been captured in play
+	 * @param menuBox the set of buttons for saving, loading, resetting, and exiting from the game
+	 */
+	public Board(int xSize, int ySize, TextArea actionText, PieceBox pieceBox, MenuBox menuBox) {
+		setLayout(new GridLayout(8, 8));
+		this.xSize = xSize;
+		this.ySize = ySize;
+		this.tiles = new Tile[xSize][ySize];
+		this.currentMove = new Move();
+		this.currentPlayerColor = ChessColor.WHITE;
+		this.pieceBox = pieceBox;
+		this.menuBox = menuBox;
+		menuBox.addButtonFunctions(new saveHandler(), new loadHandler(), new resetHandler(), new exitHandler());
+		setUpTiles();
+		setUpPieces();
+		this.actionText = actionText;
+		actionText.append("Turn " + turnNumber + "\n");
+		actionText.append(currentPlayerColor + " player's turn..." + "\n");
+		
+		try {
+			f = new File("src/resources/tile_click.wav");
+			f2 = new File("src/resources/button_click.wav");
+			ais = AudioSystem.getAudioInputStream(f);
+			ais2 = AudioSystem.getAudioInputStream(f2);
+			clip = AudioSystem.getClip();
+			clip2 = AudioSystem.getClip();
+			clip.open(ais);
+			clip2.open(ais2);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * sets up the pieces on the board for a new chess game
+	 */
+	private void setUpPieces() {
 		//Set up white pieces
 		whiteKing = new King(new Coordinate(7, 4), ChessColor.WHITE);
 		Piece whiteKnight1, whiteKnight2, whiteBishop1, whiteBishop2, whiteRook1, whiteRook2, 
@@ -152,18 +198,14 @@ public class Board extends JPanel{
 		}
 	}
 
-	//function fills tiles array and fills board with JButtons to act as spaces, alternate between black and white tiles
-	void setUpTiles(){
+	/**
+	 * fills the tiles array and fills the board with those Tile objects to act as spaces, alternate between black and white tiles  
+	 */
+	private void setUpTiles(){
 		boolean setBlack;
 		for(int i = 0; i < xSize; i++) {
 			//even rows start with white, odd rows start with black
-			if(i % 2 == 0) {
-				setBlack = false;
-			}
-
-			else {
-				setBlack = true;
-			}
+			setBlack = (i % 2 == 0) ? false : true;
 
 			for(int j = 0; j < ySize; j++) {
 				if(setBlack) {
@@ -185,44 +227,12 @@ public class Board extends JPanel{
 		}
 	}
 
-	//class constructor, takes x and y size and assigns, also fills tiles array with empty tiles and sets up pieces on the board
-	public Board(int xSize, int ySize, TextArea actionText, PieceBox pieceBox, MenuBox menuBox) {
-		setLayout(new GridLayout(8, 8));
-		this.xSize = xSize;
-		this.ySize = ySize;
-		this.tiles = new Tile[xSize][ySize];
-		this.currentMove = new Move();
-		this.currentPlayerColor = ChessColor.WHITE;
-		this.pieceBox = pieceBox;
-		this.menuBox = menuBox;
-		menuBox.addButtonFunctions(new saveHandler(), new loadHandler(), new resetHandler(), new exitHandler());
-		setUpTiles();
-		setUpPieces();
-		this.actionText = actionText;
-		actionText.append("Turn " + turnNumber + "\n");
-		actionText.append(currentPlayerColor + " player's turn..." + "\n");
-		
-		try {
-			f = new File("src/resources/tile_click.wav");
-			f2 = new File("src/resources/button_click.wav");
-			ais = AudioSystem.getAudioInputStream(f);
-			ais2 = AudioSystem.getAudioInputStream(f2);
-			clip = AudioSystem.getClip();
-			clip2 = AudioSystem.getClip();
-			clip.open(ais);
-			clip2.open(ais2);
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	/**
 	 * sets the check status for the king matching kingColor
 	 * @param kingColor the color of the king being set
 	 * @param checkStatus true if this king is in check, false otherwise
 	 */
-	public void setKingCheckStatus(ChessColor kingColor, boolean checkStatus) {
+	private void setKingCheckStatus(ChessColor kingColor, boolean checkStatus) {
 		if(kingColor == ChessColor.BLACK) {
 			if(checkStatus == true) {
 				blackKing.setKingInCheck();
@@ -249,7 +259,7 @@ public class Board extends JPanel{
 	 * @param pawnToBePromoted The pawn to be promoted into a piece of promotionType
 	 * @param promotionType The type of chess piece the pawn will be promoted to (Rook, Bishop, Knight, or Queen)
 	 */
-	public void promotePawn(Piece pawnToBePromoted, int promotionType) {
+	private void promotePawn(Piece pawnToBePromoted, int promotionType) {
 		ArrayList<Piece> pieces;
 		Piece promotedPawn = null;
 
@@ -281,13 +291,12 @@ public class Board extends JPanel{
 		pieces.add(promotedPawn);
 		getTile(promotedPawn.getPieceCoordinate()).setPiece(promotedPawn);
 		getTile(promotedPawn.getPieceCoordinate()).displayPiece();
-
 	}
 
 	/**
 	 * This function is used to check if any pawn on the board can be promoted
 	 */
-	public void checkForPawnPromotion() {
+	private void checkForPawnPromotion() {
 		ArrayList<Piece> pieces;
 		Pawn pawnToPromote = null;
 		int selection = -1;
@@ -314,7 +323,10 @@ public class Board extends JPanel{
 		}
 	}
 
-	//returns color of player in checkmate on this board, or null if neither player is in checkmate
+	/**
+	 * 
+	 * @return the color of the player in checkmate on this board, or null if neither player is in checkmate
+	 */
 	public ChessColor getPlayerInCheckMate() {
 		return playerInCheckMate;
 	}
@@ -324,7 +336,7 @@ public class Board extends JPanel{
 	 * of board accordingly, null if player is not in check
 	 * @param playerColor color of the player being checked for check status
 	 */
-	public void checkForCheck(ChessColor playerColor) {
+	private void checkForCheck(ChessColor playerColor) {
 		ArrayList<Coordinate> threatenedCoordinates = new ArrayList<Coordinate>();
 		Coordinate[] moves;
 		ArrayList<Piece> opponentPieces;
@@ -376,7 +388,7 @@ public class Board extends JPanel{
 	 * player matching playerColor is already in check
 	 * @param playerColor color of the player being checked for checkmate status
 	 */
-	public void checkForCheckMate(ChessColor playerColor) {
+	private void checkForCheckMate(ChessColor playerColor) {
 		Coordinate[] moves;
 		Move nextPossibleMove = new Move();
 		ArrayList<Piece> friendlyPieces = new ArrayList<Piece>();
@@ -440,9 +452,6 @@ public class Board extends JPanel{
 		}
 
 		for(Piece piece : friendlyPieces) {
-			
-			System.out.println(piece);
-
 			moves = piece.generateMoves(tiles, turnNumber);
 
 			for(Coordinate c : moves) {
@@ -456,7 +465,6 @@ public class Board extends JPanel{
 					checkForCheck(playerColor);
 
 					if(playerInCheck != playerColor) {
-						//System.out.println("No player is in checkmate");
 						playerInCheckMate = null;
 						//this line resets playerInCheck marker that gets altered in process of checking for checkmate
 						playerInCheck = playerColor;
@@ -474,8 +482,10 @@ public class Board extends JPanel{
 		playerInCheckMate = playerColor;
 	}
 
-	//switches color of current player taking their turn
-	public void switchCurrentPlayerColor() {
+	/**
+	 * switches color of current player taking their turn
+	 */
+	private void switchCurrentPlayerColor() {
 		if(this.currentPlayerColor == ChessColor.BLACK) {
 			this.currentPlayerColor = ChessColor.WHITE;
 		}
@@ -485,17 +495,29 @@ public class Board extends JPanel{
 		}
 	}
 
-	//returns the color of the player currently taking their turn
+	/**
+	 * 
+	 * @return the color of the player currently taking their turn
+	 */
 	public ChessColor getCurrentPlayerColor() {
 		return this.currentPlayerColor;
 	}
 
-	//returns tile of this board at given coordinate, coordinate must be valid
-	public Tile getTile(Coordinate coordinate) {
+	/**
+	 * 
+	 * @param coordinate the coordinate for the tile being retrieved
+	 * @return the tile of this board at given coordinate, coordinate must be valid
+	 */
+	private Tile getTile(Coordinate coordinate) {
 		return tiles[coordinate.getRow()][coordinate.getCol()];
 	}
 
-	public Piece[] executeCastlingMove(Move move) {
+	/**
+	 * executes a castling move in this chess game
+	 * @param move the castling move to be executed
+	 * @return the original placements of the pieces being moved in this castling move as an array
+	 */
+	private Piece[] executeCastlingMove(Move move) {
 		King king = (King) move.getSourceTile().getPiece();
 		Rook rook = (Rook) move.getDestinationTile().getPiece();
 		int row = king.getPieceCoordinate().getRow();
@@ -554,7 +576,12 @@ public class Board extends JPanel{
 		return originalPlacements3;
 	}
 
-	public void undoCastlingMove(Piece[] originalPlacements, Move move) {
+	/**
+	 * this function undoes a castling move
+	 * @param originalPlacements the original placements of the pieces before the castling move
+	 * @param move the castling move that is being undone
+	 */
+	private void undoCastlingMove(Piece[] originalPlacements, Move move) {
 		King king = (King) originalPlacements[0];
 		Rook rook = (Rook) originalPlacements[1];
 		rook.setRookHasNotMoved();
@@ -572,7 +599,7 @@ public class Board extends JPanel{
 	 * @param move the current move
 	 * @return true if the move is a castling move, false otherwise
 	 */
-	public boolean isCastlingMove(Move move) {
+	private boolean isCastlingMove(Move move) {
 		King king;
 		Rook rook;
 
@@ -590,7 +617,13 @@ public class Board extends JPanel{
 		return false;		
 	}
 
-	public Piece[] executeEnPassantMove(Move move, Pawn enemyPawn) {
+	/**
+	 * executes an enpassant move in this chess game
+	 * @param move the enpassant move to be executed
+	 * @param enemyPawn the pawn to be captured via enpassant
+	 * @return the original placements of the pieces involved in this enpassant move
+	 */
+	private Piece[] executeEnPassantMove(Move move, Pawn enemyPawn) {
 		Piece[] originalPlacements = executeStandardMove(move);
 		originalPlacements[1] = enemyPawn;
 
@@ -609,7 +642,12 @@ public class Board extends JPanel{
 		return originalPlacements;
 	}
 
-	public void undoEnPassantMove(Piece[] originalPlacements, Move move) {
+	/**
+	 * undoes an enpassant move in this chess game
+	 * @param originalPlacements the original placements of the pieces involved in this enpassant move
+	 * @param move the enpassant move being undone
+	 */
+	private void undoEnPassantMove(Piece[] originalPlacements, Move move) {
 		Tile sourceTile = move.getSourceTile();
 		Tile destinationTile = move.getDestinationTile();
 		Piece sourcePiece = originalPlacements[0];
@@ -636,7 +674,7 @@ public class Board extends JPanel{
 	 * @param move the move being checked 
 	 * @return the pawn to be captured enpassant if this move is an enpassant move or null otherwise
 	 */
-	public Pawn isEnPassantMove(Move move) {
+	private Pawn isEnPassantMove(Move move) {
 		Tile sourceTile = move.getSourceTile();
 		Tile destTile = move.getDestinationTile();
 		Piece piece = sourceTile.getPiece();
@@ -721,8 +759,12 @@ public class Board extends JPanel{
 		return null;
 	}
 
-	//checks if current move is valid
-	public boolean isValidMove(Move move) {
+	/**
+	 * checks if the current move being performed is a valid chess move
+	 * @param move the move being evaluated
+	 * @return true if the move is valid, false otherwise
+	 */
+	private boolean isValidMove(Move move) {
 		Tile sourceTile = move.getSourceTile();
 		Tile destinationTile = move.getDestinationTile();
 		Piece piece = sourceTile.getPiece();
@@ -743,7 +785,12 @@ public class Board extends JPanel{
 		return false;
 	}
 
-	public void undoStandardMove(Piece[] originalPlacements, Move move) {
+	/**
+	 * undoes any move that is not an enpassant or castling move
+	 * @param originalPlacements the original placements of the pieces involved in this move
+	 * @param move the move being undone
+	 */
+	private void undoStandardMove(Piece[] originalPlacements, Move move) {
 		Tile sourceTile = move.getSourceTile();
 		Tile destinationTile = move.getDestinationTile();
 		Piece sourcePiece = originalPlacements[0];
@@ -764,10 +811,13 @@ public class Board extends JPanel{
 		}
 	}
 
-	//used to undo the last move taken in the event of a move putting a player into check or keeping them in check
-	public void undoMove(Piece[] originalPlacements, Move move) {
-		Pawn enemyPawn = isEnPassantMove(move);
-		if(enemyPawn != null) {
+	/**
+	 * used to undo the last move taken in the event of a move putting a player into check or keeping them in check
+	 * @param originalPlacements the original placements of the pieces involded in the move being undone
+	 * @param move the move being undone
+	 */
+	private void undoMove(Piece[] originalPlacements, Move move) {
+		if(isEnPassantMove(move) != null) {
 			undoEnPassantMove(originalPlacements, move);
 		}
 
@@ -782,7 +832,12 @@ public class Board extends JPanel{
 		capturedPiece = null;
 	}
 
-	public Piece[] executeStandardMove(Move move) {
+	/**
+	 * executes any move that is not an enpassant or castling move
+	 * @param move the move to be executed
+	 * @return the original placements of the pieces involved in the move
+	 */
+	private Piece[] executeStandardMove(Move move) {
 		Tile sourceTile = move.getSourceTile();
 		Tile destinationTile = move.getDestinationTile();
 		Piece sourcePiece = sourceTile.getPiece();
@@ -808,9 +863,13 @@ public class Board extends JPanel{
 		return orignalPlacements;
 	}
 
-	//determine type of move to execute (enpassant, castling, or a standard move)
-	//moves piece from source tile to destination for the current move, does not adjust icons
-	public Piece[] executeMove(Move move) {
+	/**
+	 * determines the type of move to execute (enpassant, castling, or a standard move) 
+	 * and moves the pieces involved in the move, but does not display updated icons for this move
+	 * @param move the move being executed
+	 * @return the original placements of the pieces involved in this move
+	 */
+	private Piece[] executeMove(Move move) {
 		Pawn enemyPawn = isEnPassantMove(move);
 
 		if(enemyPawn != null) {
@@ -827,8 +886,10 @@ public class Board extends JPanel{
 		}
 	}
 
-	//sets icons on board for move
-	public void displayMove() {
+	/**
+	 * sets the icons on the board to display changes due to the current move, only performed once a move has been finalized (executed and not in need of being undone)
+	 */
+	private void displayMove() {
 		for(int r = 0; r < tiles[0].length; r++) {
 			for(int c = 0; c < tiles.length; c++) {
 				tiles[r][c].displayPiece();
@@ -842,13 +903,9 @@ public class Board extends JPanel{
 	}
 
 	/**
-	 * tries to perform this move. first checks for a player in check, if a player is in check then check if that check
-	 * is also checkmate. if it is checkmate, end the game. otherwise check if the move to be performed is valid.
-	 * if it is, try to execute the move, otherwise clear the move and try again.
-	 * after executing the move, check if this move put the player in check, if it did then undo the move and clear the
-	 * move to try again. if it did not, then display the move by updating the pieces icons on the board and switch turns
+	 * tries to perform the current move. checks for check, checkmate, and stalemate conditions after successful execution and display of current move
 	 */
-	public void tryMove() {
+	private void tryMove() {
 		if(isValidMove(currentMove)) {
 			Piece piece = currentMove.getSourceTile().getPiece();
 			int row = piece.getPieceCoordinate().getRow();
@@ -865,13 +922,11 @@ public class Board extends JPanel{
 
 			//if this move put this player in check, undo and try another move
 			if(playerInCheck == currentPlayerColor) {
-				System.out.println("undid move");
 				undoMove(originalPlacements, currentMove);
 			}
 
 			//player was not put in check by move, display the move
 			else {
-				System.out.println("displayed move");
 				displayMove();
 
 				//set enpassant status if this piece is a pawn
@@ -1105,7 +1160,11 @@ public class Board extends JPanel{
 		this.gameFrame = gameFrame;
 	}
 
-	//Handler class for button clicks to tiles on gameboard
+	/**
+	 * handler for tile clicks, creates moves to be executed
+	 * @author James Hoxie
+	 *
+	 */
 	private class TileHandler implements ActionListener{
 
 		@Override
@@ -1113,9 +1172,7 @@ public class Board extends JPanel{
 			playClip();
 			
 			Tile clickedTile = (Tile) e.getSource();
-			Piece clickedPiece = clickedTile.getPiece();
-			
-			
+			Piece clickedPiece = clickedTile.getPiece();		
 
 			if(!(currentMove.sourceSelected())) {
 				//if clicked tile has a piece and 
@@ -1133,6 +1190,11 @@ public class Board extends JPanel{
 
 	}
 
+	/**
+	 * handler for save game functionality, writes game state to a txt file stored in user's documents 
+	 * @author James Hoxie
+	 *
+	 */
 	private class saveHandler implements ActionListener {
 
 		@Override
@@ -1226,6 +1288,11 @@ public class Board extends JPanel{
 
 	}
 
+	/**
+	 * handler for load game functionality, reads from txt file stored in user's documents to set game state
+	 * @author James Hoxie
+	 *
+	 */
 	private class loadHandler implements ActionListener {
 
 		@Override
@@ -1481,6 +1548,11 @@ public class Board extends JPanel{
 
 	}
 
+	/**
+	 * handler for reset game functionality, resets the game state to a new game
+	 * @author James Hoxie
+	 *
+	 */
 	private class resetHandler implements ActionListener {
 
 		@Override
@@ -1497,6 +1569,11 @@ public class Board extends JPanel{
 		}
 	}
 
+	/**
+	 * handler for exiting the game and going back to the title
+	 * @author James Hoxie
+	 *
+	 */
 	private class exitHandler implements ActionListener {
 
 		@Override

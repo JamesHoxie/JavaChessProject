@@ -31,10 +31,6 @@ public class GameRunner{
 		
 		chessGame.gameBoard.setExitScreen(titleFrame, chessGame);
 		
-		//full screen
-		//chessGame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
-		//chessGame.setUndecorated(true);
-		
 		titleFrame.pack();
 		titleFrame.setLocationRelativeTo(null);
 		titleFrame.setVisible(true);		

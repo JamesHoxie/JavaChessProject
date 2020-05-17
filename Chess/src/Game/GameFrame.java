@@ -41,6 +41,7 @@ public class GameFrame extends JFrame {
 	 * Class Constructor
 	 */
 	public GameFrame() {
+		
 		super("Chess");
 		final Color BACKGROUND_COLOR = new Color(90, 60, 60);
 		final int FRAME_WIDTH = 1400;
